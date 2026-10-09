@@ -1,0 +1,32 @@
+<!-- Header compartido: lo inyecta layout.js en <div id="header-placeholder"> -->
+<header class="header">
+  <div class="contenedor header__barra">
+    <!-- Marca -->
+    <a href="index.html" class="logo">
+      <img src="img/logo.svg" alt="" width="34" height="34">
+      BAPEG
+      <small class="etiqueta">INDUSTRIAL PERÚ</small>
+    </a>
+    <!-- Botón hamburguesa (visible solo en móvil/tablet) -->
+    <button class="hamburguesa" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <!-- Navegación principal; main.js marca el enlace activo. -->
+    <nav class="nav" id="menu">
+      <a href="index.html">INICIO</a>
+      <a href="nosotros.html">NOSOTROS</a>
+      <a href="servicios.html">SERVICIOS</a>
+      <a href="equipo.html">EQUIPO</a>
+      <!-- Contacto por WhatsApp y acceso a cotización -->
+      <a class="header__telefono"
+        href="https://wa.me/51987654321?text=Hola%2C%20quisiera%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20industriales%20y%20una%20cotizaci%C3%B3n.%20Gracias."
+        aria-label="Contactar por WhatsApp" title="Contactar por WhatsApp" target="_blank" rel="noopener noreferrer">
+        <i class="fa-brands fa-whatsapp fa-icon" aria-hidden="true"></i>
+        CONTACTO
+      </a>
+      <a href="contacto.html" class="btn btn--primario">COTIZAR</a>
+    </nav>
+  </div>
+</header>

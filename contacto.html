@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contacto | BAPEG Industrial</title>
+  <!-- Estilos globales -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Aquí layout.js inyecta el header -->
+  <div id="header-placeholder"></div>
+  <main>
+    <!-- 1. Introducción y canales de atención -->
+    <section class="hero">
+      <div class="contenedor hero__grid">
+        <div>
+          <p class="etiqueta">CANALES DE ATENCIÓN DIRECTA</p>
+          <h1>Contáctenos y solicite su cotización técnica</h1>
+          <p>Nuestro equipo de ingenieros responderá su requerimiento técnico o propuesta económica en menos de 24 horas
+            con pre-evaluación termomecánica.</p>
+        </div>
+      </div>
+    </section>
+    <!-- 2. Formulario, compromiso de respuesta y datos de contacto -->
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="contacto-grid">
+          <div class="contacto-form-columna">
+          <div class="tarjeta reveal contacto-form-card">
+            <div class="contacto-form-card__cabecera">
+              <h2>Formulario de requerimiento técnico</h2>
+              <p class="etiqueta contacto-form-card__protocolo">PROTOCOLO RFQ / PROYECTOS</p>
+            </div>
+            <p class="contacto-form-card__intro">Complete las especificaciones térmicas y de volumen para asignación inmediata del ingeniero de cotizaciones.</p>
+            <!-- ===== CÓMO VINCULARLO A TU GMAIL (Formspree) =====
+             1. Crea cuenta en https://formspree.io con tu Gmail y pulsa "New Form".
+             2. Verifica tu correo (te llega un enlace de confirmación).
+             3. Copia tu endpoint (ej: https://formspree.io/f/xyzabcde).
+             4. Reemplaza TU_ENDPOINT en el action de abajo por ese código.
+             5. Envía una prueba: llegará a tu Gmail. (main.js envía el form sin recargar.) -->
+            <form id="form-contacto" class="form" action="https://formspree.io/f/TU_ENDPOINT" method="POST">
+              <div><label for="nombre">NOMBRES Y APELLIDO *</label><input id="nombre" name="nombre" type="text"
+                  placeholder="Ej. Ing. Roberto Mendoza" required></div>
+              <div><label for="empresa">EMPRESA / RAZÓN SOCIAL *</label><input id="empresa" name="empresa" type="text"
+                  placeholder="Ej. Minera Las Bambas S.A." required></div>
+              <div><label for="ruc">RUC (OPCIONAL)</label><input id="ruc" name="ruc" type="text"
+                  placeholder="20XXXXXXXXX"></div>
+              <div><label for="_replyto">CORREO CORPORATIVO *</label><input id="_replyto" name="_replyto" type="email"
+                  placeholder="nombre@empresa.com.pe" required></div>
+              <div><label for="telefono">TELÉFONO / WHATSAPP *</label><input id="telefono" name="telefono" type="tel"
+                  placeholder="+51 9XX XXX XXX" required></div>
+              <div class="contacto-servicio-campo"><label id="servicio-label" for="servicio-control">SERVICIO REQUERIDO *</label>
+                <select id="servicio" name="servicio" class="contacto-select__native" required tabindex="-1" aria-hidden="true">
+                  <option value="">Seleccionar servicio…</option>
+                  <option value="Montaje industrial">Montaje industrial</option>
+                  <option value="Suministro de materiales">Suministro de materiales</option>
+                  <option value="Auditoría termográfica">Auditoría termográfica</option>
+                  <option value="Mantenimiento / SLA">Mantenimiento / SLA</option>
+                </select>
+                <div class="contacto-select" id="servicio-select">
+                  <button class="contacto-select__control" id="servicio-control" type="button" role="combobox" aria-labelledby="servicio-label servicio-valor" aria-haspopup="listbox" aria-expanded="false" aria-controls="servicio-opciones">
+                    <span id="servicio-valor">Seleccionar servicio…</span>
+                    <i class="fa-solid fa-chevron-down fa-icon" aria-hidden="true"></i>
+                  </button>
+                  <ul class="contacto-select__opciones" id="servicio-opciones" role="listbox" aria-labelledby="servicio-label" hidden>
+                    <li id="servicio-opcion-1" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Montaje industrial">Montaje industrial</li>
+                    <li id="servicio-opcion-2" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Suministro de materiales">Suministro de materiales</li>
+                    <li id="servicio-opcion-3" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Auditoría termográfica">Auditoría termográfica</li>
+                    <li id="servicio-opcion-4" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Mantenimiento / SLA">Mantenimiento / SLA</li>
+                  </ul>
+                </div>
+              </div>
+              <fieldset class="completo plazo">
+                <legend class="etiqueta">PLAZO ESTIMADO DEL PROYECTO</legend>
+                <label><input type="radio" name="plazo" value="Inmediato" checked> Inmediato (&lt; 48h)</label>
+                <label><input type="radio" name="plazo" value="Menos de 15 días"> Menos de 15 días</label>
+                <label><input type="radio" name="plazo" value="Parada programada"> Parada programada</label>
+              </fieldset>
+              <div class="completo"><label for="detalle">DETALLES DEL PROYECTO Y ESPECIFICACIONES *</label><textarea
+                  id="detalle" name="detalle" rows="5" required
+                  placeholder="Diámetros de tuberías, temperaturas de operación, fluidos, ubicación de la planta…"></textarea>
+              </div>
+              <!-- Adjuntos: el plan gratuito de Formspree no admite archivos; para adjuntar use un plan de pago o EmailJS -->
+              <div class="completo contacto-archivo-campo"><label for="archivo">ADJUNTAR PLANOS O ESPECIFICACIONES TÉCNICAS (PDF, DWG, XLSX)</label>
+                <label class="contacto-upload" for="archivo">
+                  <i class="fa-solid fa-cloud-arrow-up fa-icon" aria-hidden="true"></i>
+                  <span>Arrastre sus archivos aquí o <strong>examine su equipo</strong><small>Formatos admitidos: PDF, DWG, XLSX, JPG, PNG</small></span>
+                  <input id="archivo" name="archivo" type="file" accept=".pdf,.dwg,.xlsx,.xls,.png,.jpg,.jpeg">
+                </label>
+              </div>
+              <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+              <div class="completo contacto-consentimiento"><label><input type="checkbox" name="consentimiento" value="acepto" required> Acepto la política de tratamiento de datos personales y autorizo el contacto técnico directo por parte de los ingenieros de BAPEG Industrial Perú.</label></div>
+              <div class="completo contacto-form-card__envio"><button class="btn btn--primario" type="submit">ENVIAR REQUERIMIENTO TÉCNICO <i class="fa-solid fa-arrow-right fa-icon icono-flecha" aria-hidden="true"></i></button>
+                <p id="form-estado" class="form__estado" role="status"></p>
+                <div class="contacto-form-card__seguridad"><span>FORMULARIO DE REQUERIMIENTO TÉCNICO</span><span>BAPEG INDUSTRIAL PERÚ</span></div>
+              </div>
+            </form>
+          </div>
+          <aside class="contacto-respuesta reveal">
+            <span class="contacto-respuesta__icono" aria-hidden="true"><i class="fa-solid fa-certificate fa-icon" aria-hidden="true"></i></span>
+            <div><h3>COMPROMISO DE RESPUESTA OPERATIVA</h3><p>Respuesta técnica garantizada en menos de 24 horas hábiles con pre-evaluación realizada por ingenieros mecánicos colegiados y especialistas en termodinámica industrial.</p></div>
+          </aside>
+          </div>
+          <aside class="grid">
+            <div class="tarjeta reveal"><span class="etiqueta">CAPACIDAD OPERATIVA INMEDIATA</span>
+              <p class="dato">3 cuadrillas</p>
+              <div class="barra"><span style="width:70%"></span></div>
+              <p>Respuesta para paradas no programadas en costa, sierra y minas.</p>
+            </div>
+            <div class="tarjeta reveal contacto-sede-card">
+              <div class="contacto-sede-card__encabezado">
+                <h3><i class="fa-solid fa-industry fa-icon" aria-hidden="true"></i> SEDE OPERATIVA Y TALLERES</h3>
+                <span>HUB LIMA</span>
+              </div>
+              <div class="contacto-sede-card__datos">
+                <article class="contacto-sede-card__item">
+                  <i class="fa-solid fa-location-dot fa-icon" aria-hidden="true"></i>
+                  <div><span class="etiqueta">DIRECCIÓN CENTRAL</span><strong>Carabayllo – Lima, Perú</strong><small>Acceso logístico rápido a Panamericana Norte y Vía de Evitamiento.</small></div>
+                </article>
+                <article class="contacto-sede-card__item">
+                  <i class="fa-solid fa-calendar-check fa-icon" aria-hidden="true"></i>
+                  <div><span class="etiqueta">HORARIO DE PLANTA Y PRODUCCIÓN</span><strong>Lunes a Viernes: 07:30 – 18:00<br>Sábados: 08:00 – 13:00</strong></div>
+                </article>
+                <article class="contacto-sede-card__item">
+                  <i class="fa-solid fa-truck-fast fa-icon" aria-hidden="true"></i>
+                  <div><span class="etiqueta">CAPACIDAD DE COBERTURA</span><strong>Movilización técnica a nivel nacional</strong><small>Centros mineros, refinerías, acerías y plantas químicas (Costa y Sierra).</small></div>
+                </article>
+              </div>
+            </div>
+            <div class="tarjeta reveal contacto-canales">
+              <h3 class="contacto-canales__titulo"><i class="fa-solid fa-envelopes-bulk fa-icon" aria-hidden="true"></i> CANALES DIRECTOS DE INGENIERÍA</h3>
+              <div class="contacto-canales__lista">
+                <a class="contacto-canal" href="mailto:proyectos@bapegindustrial.com">
+                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-envelope fa-icon" aria-hidden="true"></i></span>
+                  <span class="contacto-canal__texto"><small>EMAIL PROYECTOS &amp; LICITACIONES</small><strong>PROYECTOS@BAPEGINDUSTRIAL.COM</strong></span>
+                  <i class="fa-solid fa-arrow-right fa-icon contacto-canal__flecha" aria-hidden="true"></i>
+                </a>
+                <a class="contacto-canal" href="tel:+51987654321">
+                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-phone fa-icon" aria-hidden="true"></i></span>
+                  <span class="contacto-canal__texto"><small>CENTRAL TELEFÓNICA DIRECTA</small><strong>+51 987 654 321</strong></span>
+                  <i class="fa-solid fa-arrow-right fa-icon contacto-canal__flecha" aria-hidden="true"></i>
+                </a>
+                <a class="contacto-canal contacto-canal--whatsapp" href="https://wa.me/51987654321?text=Hola%2C%20quisiera%20comunicarme%20con%20BAPEG%20Industrial." target="_blank" rel="noopener">
+                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-comment-dots fa-icon" aria-hidden="true"></i></span>
+                  <span class="contacto-canal__texto"><small>WHATSAPP INDUSTRIAL 24/7</small><strong>+51 987 654 321</strong></span>
+                  <i class="fa-solid fa-arrow-up-right-from-square fa-icon contacto-canal__flecha" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+            <div class="tarjeta reveal"><span class="etiqueta">UBICACIÓN GEOESTRATÉGICA</span><iframe
+                class="mapa-embed" src="https://maps.google.com/maps?q=Carabayllo%2C%20Lima%2C%20Per%C3%BA&output=embed"
+                title="Mapa de ubicación en Carabayllo, Lima" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen></iframe><a class="btn btn--borde"
+                href="https://maps.google.com/?q=Carabayllo+Lima" target="_blank" rel="noopener">ABRIR EN GOOGLE
+                MAPS</a></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <!-- 3. Instalaciones y logística -->
+    <section class="seccion seccion--alt">
+      <div class="contenedor">
+        <p class="etiqueta">INSTALACIONES & LOGÍSTICA</p>
+        <h2 class="reveal">Capacidad instalada en Lima y despliegue en terreno</h2><br>
+        <div class="grid grid--3">
+          <article class="tarjeta reveal sinpad"><img class="media" src="img/taller.jpg" alt="">
+            <div style="padding:1.2rem">
+              <h3>Taller de chaquetas removibles</h3>
+              <p>Confección robotizada y manual de mantas aislantes hidrofugadas para turbinas y válvulas críticas.</p>
+            </div>
+          </article>
+          <article class="tarjeta reveal sinpad"><img class="media" src="img/supervision.jpg" alt="">
+            <div style="padding:1.2rem">
+              <h3>Supervisión en parada de planta</h3>
+              <p>Brigadas homologadas en minas a más de 4,000 m.s.n.m. para desmontaje y montaje sin demoras.</p>
+            </div>
+          </article>
+          <article class="tarjeta reveal sinpad"><img class="media" src="img/controlcalidad.jpg" alt="">
+            <div style="padding:1.2rem">
+              <h3>Control de calidad & termografía</h3>
+              <p>Laboratorio de calibración y análisis termográfico para asegurar cero fuga térmica.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- 4. Preguntas frecuentes -->
+    <section class="seccion">
+      <div class="contenedor">
+        <h2 class="reveal" style="font-size:1.4rem">Preguntas frecuentes para adquisiciones y licitaciones</h2><br>
+        <div class="faqs">
+          <details class="faq reveal">
+            <summary>¿Emiten certificados de calidad y dossier de calidad (QA/QC)?</summary>
+            <p>Sí. Cada entrega incluye el dossier formal con certificados de origen, ensayos de laboratorio y
+              homologación de soldadores y técnicos.</p>
+          </details>
+          <details class="faq reveal">
+            <summary>¿Cuál es el tiempo de respuesta para emergencias en calderas o tuberías?</summary>
+            <p>Disponemos de cuadrillas con movilidad inmediata: activación en menos de 12 horas en Lima Metropolitana y
+              coordinación logística prioritaria a provincias.</p>
+          </details>
+          <details class="faq reveal">
+            <summary>¿Trabajan con la planta en operación?</summary>
+            <p>Sí. Realizamos aislamiento en caliente con protocolos de trabajo seguro, sin detener la producción.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- Aquí layout.js inyecta el footer -->
+  <div id="footer-placeholder"></div>
+  <!-- layout.js primero (carga componentes), luego main.js (lógica) -->
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
