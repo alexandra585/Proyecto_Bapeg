@@ -26,6 +26,19 @@ document.addEventListener('layoutListo', () => {
 
   /* c) Año automático en el footer */
   document.getElementById('anio').textContent = new Date().getFullYear();
+
+  /* d) Botón flotante para volver al inicio */
+  const volverArriba = document.getElementById('volver-arriba');
+  const actualizarBotonSubida = () => {
+    volverArriba.classList.toggle('is-visible', window.scrollY > 350);
+  };
+
+  window.addEventListener('scroll', actualizarBotonSubida, { passive: true });
+  volverArriba.addEventListener('click', () => {
+    const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: movimientoReducido ? 'instant' : 'smooth' });
+  });
+  actualizarBotonSubida();
 });
 
 /* 2. Scroll reveal: anima cada .reveal al entrar en pantalla. */
@@ -225,30 +238,6 @@ if (form) {
     if (document.hidden) detener();
     else iniciar();
   });
-
-/* 6. Animación del botón flotante "Volver arriba" */
-window.addEventListener('scroll', () => {
-  const btnFlotante = document.getElementById('btn-subir-flotante');
-  if (btnFlotante) {
-    // Aparece cuando bajas más de 300px
-    if (window.scrollY > 300) {
-      btnFlotante.classList.add('mostrar');
-    } else {
-      btnFlotante.classList.remove('mostrar');
-    }
-  }
-});
-
-// Acción de click con scroll suave
-document.addEventListener('click', (e) => {
-  const btnFlotante = e.target.closest('#btn-subir-flotante');
-  if (btnFlotante) {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }
-});
 
   iniciar();
 })();
