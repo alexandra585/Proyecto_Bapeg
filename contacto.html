@@ -29,80 +29,113 @@
       <div class="contenedor">
         <div class="contacto-grid">
           <div class="contacto-form-columna">
-          <div class="tarjeta reveal contacto-form-card">
-            <div class="contacto-form-card__cabecera">
-              <h2>Formulario de requerimiento técnico</h2>
-              <p class="etiqueta contacto-form-card__protocolo">PROTOCOLO RFQ / PROYECTOS</p>
-            </div>
-            <p class="contacto-form-card__intro">Complete las especificaciones térmicas y de volumen para asignación inmediata del ingeniero de cotizaciones.</p>
-            <!-- ===== CÓMO VINCULARLO A TU GMAIL (Formspree) =====
+            <div class="tarjeta reveal contacto-form-card">
+              <div class="contacto-form-card__cabecera">
+                <h2>Formulario de requerimiento técnico</h2>
+                <p class="etiqueta contacto-form-card__protocolo">PROTOCOLO RFQ / PROYECTOS</p>
+              </div>
+              <p class="contacto-form-card__intro">Complete las especificaciones térmicas y de volumen para asignación
+                inmediata del ingeniero de cotizaciones.</p>
+              <!-- ===== CÓMO VINCULARLO A TU GMAIL (Formspree) =====
              1. Crea cuenta en https://formspree.io con tu Gmail y pulsa "New Form".
              2. Verifica tu correo (te llega un enlace de confirmación).
              3. Copia tu endpoint (ej: https://formspree.io/f/xyzabcde).
              4. Reemplaza TU_ENDPOINT en el action de abajo por ese código.
              5. Envía una prueba: llegará a tu Gmail. (main.js envía el form sin recargar.) -->
-            <form id="form-contacto" class="form" action="https://formspree.io/f/TU_ENDPOINT" method="POST">
-              <div><label for="nombre">NOMBRES Y APELLIDO *</label><input id="nombre" name="nombre" type="text"
-                  placeholder="Ej. Ing. Roberto Mendoza" required></div>
-              <div><label for="empresa">EMPRESA / RAZÓN SOCIAL *</label><input id="empresa" name="empresa" type="text"
-                  placeholder="Ej. Minera Las Bambas S.A." required></div>
-              <div><label for="ruc">RUC (OPCIONAL)</label><input id="ruc" name="ruc" type="text"
-                  placeholder="20XXXXXXXXX"></div>
-              <div><label for="_replyto">CORREO CORPORATIVO *</label><input id="_replyto" name="_replyto" type="email"
-                  placeholder="nombre@empresa.com.pe" required></div>
-              <div><label for="telefono">TELÉFONO / WHATSAPP *</label><input id="telefono" name="telefono" type="tel"
-                  placeholder="+51 9XX XXX XXX" required></div>
-              <div class="contacto-servicio-campo"><label id="servicio-label" for="servicio-control">SERVICIO REQUERIDO *</label>
-                <select id="servicio" name="servicio" class="contacto-select__native" required tabindex="-1" aria-hidden="true">
-                  <option value="">Seleccionar servicio…</option>
-                  <option value="Montaje industrial">Montaje industrial</option>
-                  <option value="Suministro de materiales">Suministro de materiales</option>
-                  <option value="Auditoría termográfica">Auditoría termográfica</option>
-                  <option value="Mantenimiento / SLA">Mantenimiento / SLA</option>
-                </select>
-                <div class="contacto-select" id="servicio-select">
-                  <button class="contacto-select__control" id="servicio-control" type="button" role="combobox" aria-labelledby="servicio-label servicio-valor" aria-haspopup="listbox" aria-expanded="false" aria-controls="servicio-opciones">
-                    <span id="servicio-valor">Seleccionar servicio…</span>
-                    <i class="fa-solid fa-chevron-down fa-icon" aria-hidden="true"></i>
-                  </button>
-                  <ul class="contacto-select__opciones" id="servicio-opciones" role="listbox" aria-labelledby="servicio-label" hidden>
-                    <li id="servicio-opcion-1" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Montaje industrial">Montaje industrial</li>
-                    <li id="servicio-opcion-2" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Suministro de materiales">Suministro de materiales</li>
-                    <li id="servicio-opcion-3" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Auditoría termográfica">Auditoría termográfica</li>
-                    <li id="servicio-opcion-4" class="contacto-select__opcion" role="option" aria-selected="false" tabindex="-1" data-value="Mantenimiento / SLA">Mantenimiento / SLA</li>
-                  </ul>
+              <form id="form-contacto" class="form" action="https://formspree.io/f/TU_ENDPOINT" method="POST">
+                <div><label for="nombre">NOMBRES Y APELLIDO *</label><input id="nombre" name="nombre" type="text"
+                    placeholder="Ej. Ing. Roberto Mendoza" required></div>
+                <div><label for="empresa">EMPRESA / RAZÓN SOCIAL *</label><input id="empresa" name="empresa" type="text"
+                    placeholder="Ej. Minera Las Bambas S.A." required></div>
+                <div><label for="ruc">RUC (OPCIONAL)</label><input id="ruc" name="ruc" type="text"
+                    placeholder="20XXXXXXXXX"></div>
+                <div><label for="_replyto">CORREO CORPORATIVO *</label><input id="_replyto" name="_replyto" type="email"
+                    placeholder="nombre@empresa.com.pe" required></div>
+                <div><label for="telefono">TELÉFONO / WHATSAPP *</label><input id="telefono" name="telefono" type="tel"
+                    placeholder="+51 9XX XXX XXX" required></div>
+                <div class="contacto-servicio-campo"><label id="servicio-label" for="servicio-control">SERVICIO
+                    REQUERIDO *</label>
+                  <select id="servicio" name="servicio" class="contacto-select__native" required tabindex="-1"
+                    aria-hidden="true">
+                    <option value="">Seleccionar servicio…</option>
+                    <option value="Montaje industrial">Montaje industrial</option>
+                    <option value="Suministro de materiales">Suministro de materiales</option>
+                    <option value="Auditoría termográfica">Auditoría termográfica</option>
+                    <option value="Mantenimiento / SLA">Mantenimiento / SLA</option>
+                  </select>
+                  <div class="contacto-select" id="servicio-select">
+                    <button class="contacto-select__control" id="servicio-control" type="button" role="combobox"
+                      aria-labelledby="servicio-label servicio-valor" aria-haspopup="listbox" aria-expanded="false"
+                      aria-controls="servicio-opciones">
+                      <span id="servicio-valor">Seleccionar servicio…</span>
+                      <i class="fa-solid fa-chevron-down fa-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="contacto-select__opciones" id="servicio-opciones" role="listbox"
+                      aria-labelledby="servicio-label" hidden>
+                      <li id="servicio-opcion-1" class="contacto-select__opcion" role="option" aria-selected="false"
+                        tabindex="-1" data-value="Montaje industrial">Montaje industrial</li>
+                      <li id="servicio-opcion-2" class="contacto-select__opcion" role="option" aria-selected="false"
+                        tabindex="-1" data-value="Suministro de materiales">Suministro de materiales</li>
+                      <li id="servicio-opcion-3" class="contacto-select__opcion" role="option" aria-selected="false"
+                        tabindex="-1" data-value="Auditoría termográfica">Auditoría termográfica</li>
+                      <li id="servicio-opcion-4" class="contacto-select__opcion" role="option" aria-selected="false"
+                        tabindex="-1" data-value="Mantenimiento / SLA">Mantenimiento / SLA</li>
+                    </ul>
+                  </div>
                 </div>
+                <fieldset class="completo plazo">
+                  <legend class="etiqueta">PLAZO ESTIMADO DEL PROYECTO</legend>
+                  <label><input type="radio" name="plazo" value="Inmediato" checked> Inmediato (&lt; 48h)</label>
+                  <label><input type="radio" name="plazo" value="Menos de 15 días"> Menos de 15 días</label>
+                  <label><input type="radio" name="plazo" value="Parada programada"> Parada programada</label>
+                </fieldset>
+                <div class="completo"><label for="detalle">DETALLES DEL PROYECTO Y ESPECIFICACIONES *</label><textarea
+                    id="detalle" name="detalle" rows="5" required
+                    placeholder="Diámetros de tuberías, temperaturas de operación, fluidos, ubicación de la planta…"></textarea>
+                </div>
+                <!-- Adjuntos: el plan gratuito de Formspree no admite archivos; para adjuntar use un plan de pago o EmailJS -->
+                <div class="completo contacto-archivo-campo">
+                  <label for="archivo">ADJUNTAR PLANOS O ESPECIFICACIONES TÉCNICAS (PDF, DWG, XLSX MAX 25MB)</label>
+                  <label class="contacto-upload" for="archivo"
+                    style="flex-direction: column; padding: 2rem 1rem; gap: 0.8rem;">
+
+                    <!-- Ícono de la nube en tamaño más grande y color naranja principal -->
+                    <i class="fa-solid fa-cloud-arrow-up fa-icon" style="color: var(--primario); font-size: 28px;"
+                      aria-hidden="true"></i>
+
+                    <!-- Contenedor del texto forzado a centrarse en columna -->
+                    <span style="display: flex; flex-direction: column; align-items: center; gap: 0.4rem;">
+                      <span>Arrastre sus archivos aquí o <strong
+                          style="color: var(--primario); font-weight: normal;">examine su equipo</strong></span>
+                      <small style="color: var(--texto-suave);">Formatos admitidos: PDF, DWG, DXF, XLSX, ZIP</small>
+                    </span>
+
+                    <input id="archivo" name="archivo" type="file"
+                      accept=".pdf,.dwg,.xlsx,.xls,.png,.jpg,.jpeg,.dxf,.zip">
+                  </label>
+                </div>
+                <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+                <div class="completo contacto-consentimiento"><label><input type="checkbox" name="consentimiento"
+                      value="acepto" required> Acepto la política de tratamiento de datos personales y autorizo el
+                    contacto técnico directo por parte de los ingenieros de BAPEG Industrial Perú.</label></div>
+                <div class="completo contacto-form-card__envio"><button class="btn btn--primario" type="submit">ENVIAR
+                    REQUERIMIENTO TÉCNICO <i class="fa-solid fa-arrow-right fa-icon icono-flecha"
+                      aria-hidden="true"></i></button>
+                  <p id="form-estado" class="form__estado" role="status"></p>
+                  <div class="contacto-form-card__seguridad"><span>FORMULARIO DE REQUERIMIENTO TÉCNICO</span><span>BAPEG
+                      INDUSTRIAL PERÚ</span></div>
+                </div>
+              </form>
+            </div>
+            <aside class="contacto-respuesta reveal">
+              <span class="contacto-respuesta__icono" aria-hidden="true"><i class="fa-solid fa-certificate fa-icon"
+                  aria-hidden="true"></i></span>
+              <div>
+                <h3>COMPROMISO DE RESPUESTA OPERATIVA</h3>
+                <p>Respuesta técnica garantizada en menos de 24 horas hábiles con pre-evaluación realizada por
+                  ingenieros mecánicos colegiados y especialistas en termodinámica industrial.</p>
               </div>
-              <fieldset class="completo plazo">
-                <legend class="etiqueta">PLAZO ESTIMADO DEL PROYECTO</legend>
-                <label><input type="radio" name="plazo" value="Inmediato" checked> Inmediato (&lt; 48h)</label>
-                <label><input type="radio" name="plazo" value="Menos de 15 días"> Menos de 15 días</label>
-                <label><input type="radio" name="plazo" value="Parada programada"> Parada programada</label>
-              </fieldset>
-              <div class="completo"><label for="detalle">DETALLES DEL PROYECTO Y ESPECIFICACIONES *</label><textarea
-                  id="detalle" name="detalle" rows="5" required
-                  placeholder="Diámetros de tuberías, temperaturas de operación, fluidos, ubicación de la planta…"></textarea>
-              </div>
-              <!-- Adjuntos: el plan gratuito de Formspree no admite archivos; para adjuntar use un plan de pago o EmailJS -->
-              <div class="completo contacto-archivo-campo"><label for="archivo">ADJUNTAR PLANOS O ESPECIFICACIONES TÉCNICAS (PDF, DWG, XLSX)</label>
-                <label class="contacto-upload" for="archivo">
-                  <i class="fa-solid fa-cloud-arrow-up fa-icon" aria-hidden="true"></i>
-                  <span>Arrastre sus archivos aquí o <strong>examine su equipo</strong><small>Formatos admitidos: PDF, DWG, XLSX, JPG, PNG</small></span>
-                  <input id="archivo" name="archivo" type="file" accept=".pdf,.dwg,.xlsx,.xls,.png,.jpg,.jpeg">
-                </label>
-              </div>
-              <input class="honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
-              <div class="completo contacto-consentimiento"><label><input type="checkbox" name="consentimiento" value="acepto" required> Acepto la política de tratamiento de datos personales y autorizo el contacto técnico directo por parte de los ingenieros de BAPEG Industrial Perú.</label></div>
-              <div class="completo contacto-form-card__envio"><button class="btn btn--primario" type="submit">ENVIAR REQUERIMIENTO TÉCNICO <i class="fa-solid fa-arrow-right fa-icon icono-flecha" aria-hidden="true"></i></button>
-                <p id="form-estado" class="form__estado" role="status"></p>
-                <div class="contacto-form-card__seguridad"><span>FORMULARIO DE REQUERIMIENTO TÉCNICO</span><span>BAPEG INDUSTRIAL PERÚ</span></div>
-              </div>
-            </form>
-          </div>
-          <aside class="contacto-respuesta reveal">
-            <span class="contacto-respuesta__icono" aria-hidden="true"><i class="fa-solid fa-certificate fa-icon" aria-hidden="true"></i></span>
-            <div><h3>COMPROMISO DE RESPUESTA OPERATIVA</h3><p>Respuesta técnica garantizada en menos de 24 horas hábiles con pre-evaluación realizada por ingenieros mecánicos colegiados y especialistas en termodinámica industrial.</p></div>
-          </aside>
+            </aside>
           </div>
           <aside class="grid">
             <div class="tarjeta reveal"><span class="etiqueta">CAPACIDAD OPERATIVA INMEDIATA</span>
@@ -118,43 +151,58 @@
               <div class="contacto-sede-card__datos">
                 <article class="contacto-sede-card__item">
                   <i class="fa-solid fa-location-dot fa-icon" aria-hidden="true"></i>
-                  <div><span class="etiqueta">DIRECCIÓN CENTRAL</span><strong>Carabayllo – Lima, Perú</strong><small>Acceso logístico rápido a Panamericana Norte y Vía de Evitamiento.</small></div>
+                  <div><span class="etiqueta">DIRECCIÓN CENTRAL</span><strong>Carabayllo – Lima,
+                      Perú</strong><small>Acceso logístico rápido a Panamericana Norte y Vía de Evitamiento.</small>
+                  </div>
                 </article>
                 <article class="contacto-sede-card__item">
                   <i class="fa-solid fa-calendar-check fa-icon" aria-hidden="true"></i>
-                  <div><span class="etiqueta">HORARIO DE PLANTA Y PRODUCCIÓN</span><strong>Lunes a Viernes: 07:30 – 18:00<br>Sábados: 08:00 – 13:00</strong></div>
+                  <div><span class="etiqueta">HORARIO DE PLANTA Y PRODUCCIÓN</span><strong>Lunes a Viernes: 07:30 –
+                      18:00<br>Sábados: 08:00 – 13:00</strong></div>
                 </article>
                 <article class="contacto-sede-card__item">
                   <i class="fa-solid fa-truck-fast fa-icon" aria-hidden="true"></i>
-                  <div><span class="etiqueta">CAPACIDAD DE COBERTURA</span><strong>Movilización técnica a nivel nacional</strong><small>Centros mineros, refinerías, acerías y plantas químicas (Costa y Sierra).</small></div>
+                  <div><span class="etiqueta">CAPACIDAD DE COBERTURA</span><strong>Movilización técnica a nivel
+                      nacional</strong><small>Centros mineros, refinerías, acerías y plantas químicas (Costa y
+                      Sierra).</small></div>
                 </article>
               </div>
             </div>
             <div class="tarjeta reveal contacto-canales">
-              <h3 class="contacto-canales__titulo"><i class="fa-solid fa-envelopes-bulk fa-icon" aria-hidden="true"></i> CANALES DIRECTOS DE INGENIERÍA</h3>
+              <h3 class="contacto-canales__titulo"><i class="fa-solid fa-envelopes-bulk fa-icon" aria-hidden="true"></i>
+                CANALES DIRECTOS DE INGENIERÍA</h3>
               <div class="contacto-canales__lista">
                 <a class="contacto-canal" href="mailto:proyectos@bapegindustrial.com">
-                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-envelope fa-icon" aria-hidden="true"></i></span>
-                  <span class="contacto-canal__texto"><small>EMAIL PROYECTOS &amp; LICITACIONES</small><strong>PROYECTOS@BAPEGINDUSTRIAL.COM</strong></span>
+                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-envelope fa-icon"
+                      aria-hidden="true"></i></span>
+                  <span class="contacto-canal__texto"><small>EMAIL PROYECTOS &amp;
+                      LICITACIONES</small><strong>PROYECTOS@BAPEGINDUSTRIAL.COM</strong></span>
                   <i class="fa-solid fa-arrow-right fa-icon contacto-canal__flecha" aria-hidden="true"></i>
                 </a>
                 <a class="contacto-canal" href="tel:+51987654321">
-                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-phone fa-icon" aria-hidden="true"></i></span>
-                  <span class="contacto-canal__texto"><small>CENTRAL TELEFÓNICA DIRECTA</small><strong>+51 987 654 321</strong></span>
+                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-phone fa-icon"
+                      aria-hidden="true"></i></span>
+                  <span class="contacto-canal__texto"><small>CENTRAL TELEFÓNICA DIRECTA</small><strong>+51 987 654
+                      321</strong></span>
                   <i class="fa-solid fa-arrow-right fa-icon contacto-canal__flecha" aria-hidden="true"></i>
                 </a>
-                <a class="contacto-canal contacto-canal--whatsapp" href="https://wa.me/51987654321?text=Hola%2C%20quisiera%20comunicarme%20con%20BAPEG%20Industrial." target="_blank" rel="noopener">
-                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-comment-dots fa-icon" aria-hidden="true"></i></span>
-                  <span class="contacto-canal__texto"><small>WHATSAPP INDUSTRIAL 24/7</small><strong>+51 987 654 321</strong></span>
-                  <i class="fa-solid fa-arrow-up-right-from-square fa-icon contacto-canal__flecha" aria-hidden="true"></i>
+                <a class="contacto-canal contacto-canal--whatsapp"
+                  href="https://wa.me/51987654321?text=Hola%2C%20quisiera%20comunicarme%20con%20BAPEG%20Industrial."
+                  target="_blank" rel="noopener">
+                  <span class="contacto-canal__icono" aria-hidden="true"><i class="fa-solid fa-comment-dots fa-icon"
+                      aria-hidden="true"></i></span>
+                  <span class="contacto-canal__texto"><small>WHATSAPP INDUSTRIAL 24/7</small><strong>+51 987 654
+                      321</strong></span>
+                  <i class="fa-solid fa-arrow-up-right-from-square fa-icon contacto-canal__flecha"
+                    aria-hidden="true"></i>
                 </a>
               </div>
             </div>
-            <div class="tarjeta reveal"><span class="etiqueta">UBICACIÓN GEOESTRATÉGICA</span><iframe
-                class="mapa-embed" src="https://maps.google.com/maps?q=Carabayllo%2C%20Lima%2C%20Per%C3%BA&output=embed"
+            <div class="tarjeta reveal"><span class="etiqueta">UBICACIÓN GEOESTRATÉGICA</span><iframe class="mapa-embed"
+                src="https://maps.google.com/maps?q=Carabayllo%2C%20Lima%2C%20Per%C3%BA&output=embed"
                 title="Mapa de ubicación en Carabayllo, Lima" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                allowfullscreen></iframe><a class="btn btn--borde"
-                href="https://maps.google.com/?q=Carabayllo+Lima" target="_blank" rel="noopener">ABRIR EN GOOGLE
+                allowfullscreen></iframe><a class="btn btn--borde" href="https://maps.google.com/?q=Carabayllo+Lima"
+                target="_blank" rel="noopener">ABRIR EN GOOGLE
                 MAPS</a></div>
           </aside>
         </div>
