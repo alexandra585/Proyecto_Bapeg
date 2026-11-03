@@ -36,20 +36,18 @@
               </div>
               <p class="contacto-form-card__intro">Complete las especificaciones térmicas y de volumen para asignación
                 inmediata del ingeniero de cotizaciones.</p>
-              <!-- ===== CÓMO VINCULARLO A TU GMAIL (Formspree) =====
-             1. Crea cuenta en https://formspree.io con tu Gmail y pulsa "New Form".
-             2. Verifica tu correo (te llega un enlace de confirmación).
-             3. Copia tu endpoint (ej: https://formspree.io/f/xyzabcde).
-             4. Reemplaza TU_ENDPOINT en el action de abajo por ese código.
-             5. Envía una prueba: llegará a tu Gmail. (main.js envía el form sin recargar.) -->
-              <form id="form-contacto" class="form" action="https://formspree.io/f/TU_ENDPOINT" method="POST">
+              <!-- El formulario se guarda en MySQL mediante el backend Node.js (server/).
+                   main.js lo envía sin recargar a /api/requerimientos y los registros
+                   se gestionan desde el panel administrativo (/admin). -->
+              <form id="form-contacto" class="form" action="/api/requerimientos" method="POST"
+                enctype="multipart/form-data">
                 <div><label for="nombre">NOMBRES Y APELLIDO *</label><input id="nombre" name="nombre" type="text"
                     placeholder="Ej. Ing. Roberto Mendoza" required></div>
                 <div><label for="empresa">EMPRESA / RAZÓN SOCIAL *</label><input id="empresa" name="empresa" type="text"
                     placeholder="Ej. Minera Las Bambas S.A." required></div>
                 <div><label for="ruc">RUC (OPCIONAL)</label><input id="ruc" name="ruc" type="text"
-                    placeholder="20XXXXXXXXX"></div>
-                <div><label for="_replyto">CORREO CORPORATIVO *</label><input id="_replyto" name="_replyto" type="email"
+                    inputmode="numeric" maxlength="11" pattern="\d{11}" placeholder="20XXXXXXXXX"></div>
+                <div><label for="correo">CORREO CORPORATIVO *</label><input id="correo" name="correo" type="email"
                     placeholder="nombre@empresa.com.pe" required></div>
                 <div><label for="telefono">TELÉFONO / WHATSAPP *</label><input id="telefono" name="telefono" type="tel"
                     placeholder="+51 9XX XXX XXX" required></div>
@@ -93,7 +91,7 @@
                     id="detalle" name="detalle" rows="5" required
                     placeholder="Diámetros de tuberías, temperaturas de operación, fluidos, ubicación de la planta…"></textarea>
                 </div>
-                <!-- Adjuntos: el plan gratuito de Formspree no admite archivos; para adjuntar use un plan de pago o EmailJS -->
+                <!-- Adjunto opcional: el backend lo guarda en MySQL (máx. 25 MB) -->
                 <div class="completo contacto-archivo-campo">
                   <label for="archivo">ADJUNTAR PLANOS O ESPECIFICACIONES TÉCNICAS (PDF, DWG, XLSX MAX 25MB)</label>
                   <label class="contacto-upload" for="archivo"
@@ -107,7 +105,7 @@
                     <span style="display: flex; flex-direction: column; align-items: center; gap: 0.4rem;">
                       <span>Arrastre sus archivos aquí o <strong
                           style="color: var(--primario); font-weight: normal;">examine su equipo</strong></span>
-                      <small style="color: var(--texto-suave);">Formatos admitidos: PDF, DWG, DXF, XLSX, ZIP</small>
+                      <small id="archivo-nombre" style="color: var(--texto-suave);">Formatos admitidos: PDF, DWG, DXF, XLSX, ZIP</small>
                     </span>
 
                     <input id="archivo" name="archivo" type="file"

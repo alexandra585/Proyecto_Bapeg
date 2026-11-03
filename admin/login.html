@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Acceso administrativo | BAPEG Industrial</title>
+  <link rel="icon" href="../img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+  <main class="login">
+    <div class="login__card">
+      <!-- Marca -->
+      <div class="login__marca">
+        <img src="../img/logo.svg" alt="">
+        <div>BAPEG <small>INDUSTRIAL PERÚ</small></div>
+      </div>
+
+      <p class="etiqueta">PANEL ADMINISTRATIVO</p>
+      <h1>Iniciar sesión</h1>
+      <p class="login__intro">Acceso restringido para la gestión de requerimientos técnicos.</p>
+
+      <!-- Formulario de acceso: lo envía admin.js a /api/auth/login -->
+      <form id="form-login" novalidate>
+        <div class="login__error" id="login-error" role="alert">
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <span id="login-error-texto"></span>
+        </div>
+        <div class="campo">
+          <label for="usuario">USUARIO</label>
+          <input class="input" id="usuario" name="usuario" type="text" autocomplete="username" required autofocus>
+        </div>
+        <div class="campo">
+          <label for="password">CONTRASEÑA</label>
+          <div class="campo-clave">
+            <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+            <button type="button" id="ver-clave" aria-label="Mostrar contraseña">
+              <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <button class="btn btn--primario" type="submit" id="btn-ingresar">
+          INGRESAR AL PANEL <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </form>
+
+      <a class="login__volver" href="../index.html">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> VOLVER AL SITIO WEB
+      </a>
+    </div>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+
+</html>
