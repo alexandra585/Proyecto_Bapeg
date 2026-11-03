@@ -8,6 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const { pool } = require('../db');
+const { enviarConfirmacion } = require('../correo');
 
 const router = express.Router();
 
@@ -80,6 +81,7 @@ router.post('/', limite, (req, res, next) => {
     }
 
     const a = req.file;
+    const nombreArchivo = a ? Buffer.from(a.originalname, 'latin1').toString('utf8') : null;
     const [resultado] = await pool.query(
       `INSERT INTO requerimientos
         (nombre, empresa, ruc, correo, telefono, servicio, plazo, detalle,
@@ -88,7 +90,7 @@ router.post('/', limite, (req, res, next) => {
       [
         texto(c.nombre), texto(c.empresa), texto(c.ruc) || null, texto(c.correo).toLowerCase(),
         texto(c.telefono), texto(c.servicio), texto(c.plazo), texto(c.detalle),
-        a ? Buffer.from(a.originalname, 'latin1').toString('utf8') : null,
+        nombreArchivo,
         a ? a.mimetype : null,
         a ? a.size : null,
         a ? a.buffer : null,
@@ -96,7 +98,21 @@ router.post('/', limite, (req, res, next) => {
       ]
     );
 
-    res.status(201).json({ ok: true, id: resultado.insertId, mensaje: 'Requerimiento registrado.' });
+    const id = resultado.insertId;
+    res.status(201).json({ ok: true, id, mensaje: 'Requerimiento registrado.' });
+
+    // Correo de confirmación al cliente (en segundo plano: no retrasa la respuesta)
+    enviarConfirmacion({
+      codigo: 'RFQ-' + String(id).padStart(4, '0'),
+      nombre: texto(c.nombre),
+      empresa: texto(c.empresa),
+      correo: texto(c.correo).toLowerCase(),
+      telefono: texto(c.telefono),
+      servicio: texto(c.servicio),
+      plazo: texto(c.plazo),
+      detalle: texto(c.detalle),
+      archivo: nombreArchivo
+    });
   } catch (error) {
     next(error);
   }

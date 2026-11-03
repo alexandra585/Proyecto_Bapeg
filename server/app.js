@@ -14,8 +14,9 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const cors = require('cors');
 
-const { config, inicializar } = require('./db');
+const { config, inicializar, describirError } = require('./db');
 const { asegurarAdministrador } = require('./admin-inicial');
+const { verificarCorreo } = require('./correo');
 
 const app = express();
 const RAIZ = path.join(__dirname, '..');
@@ -109,12 +110,13 @@ app.use((err, req, res, next) => {
   try {
     await inicializar();
     await asegurarAdministrador();
+    await verificarCorreo();
     app.listen(PUERTO, () => {
       console.log(`BAPEG listo en http://localhost:${PUERTO}`);
       console.log(`Panel administrativo: http://localhost:${PUERTO}/admin`);
     });
   } catch (error) {
-    console.error('No se pudo conectar a MySQL. Revise los datos de su archivo .env →', error.message);
+    console.error(`No se pudo conectar a MySQL en ${config.host}:${config.port}. Revise su archivo .env →`, describirError(error));
     process.exit(1);
   }
 })();
