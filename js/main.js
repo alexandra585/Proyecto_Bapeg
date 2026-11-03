@@ -3,7 +3,7 @@
   1. Navegación compartida y fecha del footer.
   2. Animación de entrada al desplazar la página.
   3. Selector de servicio del formulario.
-  4. Envío del formulario.
+  4. Envío del formulario al backend (Node.js + MySQL).
   5. Carrusel de imágenes.
 */
 
@@ -24,10 +24,14 @@ document.addEventListener('layoutListo', () => {
     boton.setAttribute('aria-expanded', abierto);
   });
 
-  /* c) Año automático en el footer */
+  /* c) Enlace al panel: en GitHub Pages apunta al backend publicado */
+  const enlaceAdmin = document.getElementById('enlace-admin');
+  if (enlaceAdmin && location.hostname.endsWith('github.io')) enlaceAdmin.href = API_NUBE + '/admin/';
+
+  /* d) Año automático en el footer */
   document.getElementById('anio').textContent = new Date().getFullYear();
 
-  /* d) Botón flotante para volver al inicio */
+  /* e) Botón flotante para volver al inicio */
   const volverArriba = document.getElementById('volver-arriba');
   const actualizarBotonSubida = () => {
     volverArriba.classList.toggle('is-visible', window.scrollY > 350);
@@ -148,37 +152,70 @@ if (servicioSelect) {
   }));
 }
 
-/* 4. Envío del formulario a Formspree, sin recargar la página.
+/* 4. Envío del formulario al backend Node.js + MySQL, sin recargar la página.
 
-   ===== PASOS PARA VINCULARLO A TU GMAIL (Formspree) =====
-   1. Crea una cuenta gratis en https://formspree.io con tu correo de Gmail.
-   2. Pulsa "New Form", ponle nombre y confirma tu correo (llega un email de verificación).
-   3. Copia el endpoint, p. ej. https://formspree.io/f/xyzabcde
-   4. En contacto.html reemplaza TU_ENDPOINT en el atributo action del <form> por ese código.
-   5. Prueba el envío: los mensajes llegarán a tu bandeja de Gmail.
-   ALTERNATIVA EmailJS: https://www.emailjs.com → crea servicio Gmail + plantilla, y usa
-emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form, PUBLIC_KEY) en lugar del fetch de abajo. */
-/* 4. Envía el formulario y presenta el resultado en pantalla. */
+   ¿A qué servidor se envía?
+   - Si la página la sirve el propio servidor Node (localhost:3000 o la nube) → misma URL.
+   - Si se abre con Live Server (otro puerto) → http://localhost:3000.
+   - Si se abre desde GitHub Pages → API_NUBE (cámbiala por la URL de tu backend publicado). */
+const API_NUBE = 'https://bapeg-industrial.onrender.com';
+
+function urlFormulario() {
+  const { hostname, port } = location;
+  if (hostname.endsWith('github.io')) return API_NUBE + '/api/requerimientos';
+  if (/^(localhost|127\.0\.0\.1)$/.test(hostname) && port !== '3000') return 'http://localhost:3000/api/requerimientos';
+  return '/api/requerimientos';
+}
+
 if (form) {
+  const estado = document.getElementById('form-estado');
+  const boton = form.querySelector('[type="submit"]');
+  const archivo = document.getElementById('archivo');
+  const archivoNombre = document.getElementById('archivo-nombre');
+  const textoArchivo = archivoNombre?.textContent;
+
+  /* Muestra el nombre del archivo elegido */
+  archivo?.addEventListener('change', () => {
+    const elegido = archivo.files[0];
+    if (elegido && elegido.size > 25 * 1024 * 1024) {
+      archivo.value = '';
+      archivoNombre.textContent = 'El archivo supera los 25 MB. Elija otro.';
+      return;
+    }
+    archivoNombre.textContent = elegido ? '📎 ' + elegido.name : textoArchivo;
+  });
+  form.addEventListener('reset', () => { if (archivoNombre) archivoNombre.textContent = textoArchivo; });
+
   form.addEventListener('submit', async (ev) => {
     ev.preventDefault();
-    const estado = document.getElementById('form-estado');
+    form.querySelectorAll('[aria-invalid="true"]').forEach(c => c.removeAttribute('aria-invalid'));
     estado.textContent = 'Enviando…';
+    boton.disabled = true;
+
     try {
-      const respuesta = await fetch(form.action, {
+      const respuesta = await fetch(urlFormulario(), {
         method: 'POST',
         body: new FormData(form),
         headers: { Accept: 'application/json' }
       });
+      const datos = await respuesta.json().catch(() => ({}));
 
       if (respuesta.ok) {
-        estado.textContent = 'Requerimiento enviado. Responderemos en menos de 24 h.';
+        const codigo = datos.id ? ' Código: RFQ-' + String(datos.id).padStart(4, '0') + '.' : '';
+        estado.textContent = 'Requerimiento enviado.' + codigo + ' Responderemos en menos de 24 h.';
         form.reset();
       } else {
-        throw new Error('El servicio de formularios devolvió un error.');
+        // Marca los campos con error que devuelve el servidor
+        Object.keys(datos.errores || {}).forEach(nombre => {
+          form.querySelector(`[name="${nombre}"]`)?.setAttribute('aria-invalid', 'true');
+        });
+        const detalle = datos.errores ? ' ' + Object.values(datos.errores).join(' ') : '';
+        estado.textContent = (datos.mensaje || 'No se pudo enviar el requerimiento.') + detalle;
       }
     } catch {
-      estado.textContent = 'No se pudo enviar. Revise el endpoint de Formspree o escriba a proyectos@bapegindustrial.com.';
+      estado.textContent = 'No se pudo conectar con el servidor. Intente nuevamente o escriba a proyectos@bapegindustrial.com.';
+    } finally {
+      boton.disabled = false;
     }
   });
 }

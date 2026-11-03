@@ -2664,3 +2664,9 @@ figure { margin: 0; } figcaption { margin-top: .5rem; }
     font-size:.63rem;
   }
 }
+
+/* Formulario: campos marcados con error por el servidor (main.js) */
+.form [aria-invalid="true"] {
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px rgba(255,107,0,.2);
+}
