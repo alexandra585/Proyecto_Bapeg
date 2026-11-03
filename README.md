@@ -18,6 +18,7 @@ para gestionarlos.
 | Gestión | Cambio de estado (Nuevo → En revisión → Cotizado → Cerrado) y notas internas. |
 | Eliminar | Con ventana de confirmación. |
 | Adjuntos | El archivo del formulario (PDF, DWG, DXF, XLSX, ZIP… máx. 25 MB) se guarda en MySQL y se descarga desde el panel. |
+| Correo de confirmación | Al enviar el formulario, el cliente recibe un correo (Gmail + Nodemailer) con su código RFQ y el resumen. |
 | Exportar | Descarga CSV (se abre en Excel) respetando los filtros activos. |
 
 ## Estructura
@@ -72,6 +73,19 @@ npm run crear-admin -- usuario "ClaveSegura123" "Nombre Apellido"
 
 > Si abres el sitio con **Live Server** (puerto 5500), el formulario igual envía a `http://localhost:3000`
 > mientras el servidor Node esté encendido.
+
+## Correo de confirmación (Gmail)
+
+1. En tu cuenta de Google activa la **Verificación en 2 pasos**.
+2. Entra a https://myaccount.google.com/apppasswords, crea una contraseña con nombre "BAPEG" y copia las 16 letras.
+3. En `.env` completa:
+   ```
+   MAIL_USER=tucorreo@gmail.com
+   MAIL_PASS=abcdefghijklmnop
+   ```
+4. Reinicia con `npm start`. Debe aparecer `Correo listo: las confirmaciones se envían desde ...`.
+
+Si `MAIL_USER`/`MAIL_PASS` están vacíos, el formulario funciona igual pero no envía correos.
 
 ## API
 
