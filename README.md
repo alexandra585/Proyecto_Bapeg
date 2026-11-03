@@ -7,6 +7,8 @@ para gestionarlos.
 - Sitio estático (GitHub Pages): https://alexandra585.github.io/Proyecto_Bapeg/
 - Panel administrativo: `/admin` (en el servidor Node)
 
+> **¿Recién descargaste el proyecto?** Sigue la guía paso a paso: [INSTALACION.md](INSTALACION.md)
+
 ## Funcionalidades del panel
 
 | Función | Descripción |
