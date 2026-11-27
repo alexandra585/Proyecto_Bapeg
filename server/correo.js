@@ -1,34 +1,33 @@
 /*
-  correo.js – Envío de correos con Nodemailer (Gmail)
-  1. Crea el "transporte" SMTP con los datos de .env (MAIL_USER / MAIL_PASS).
-  2. enviarConfirmacion(): correo al cliente con su código RFQ y un resumen.
-  Si MAIL_USER o MAIL_PASS no están definidos, no se envía nada (solo un aviso en consola).
-
-  Gmail exige una "contraseña de aplicación" (no tu contraseña normal):
-  Cuenta de Google → Seguridad → Verificación en 2 pasos (activar) → Contraseñas de aplicaciones.
+  correo.js – Envío de correos con API HTTP de Brevo (nube) o Nodemailer Gmail (local)
 */
 const nodemailer = require('nodemailer');
 
-const MAIL_USER = process.env.MAIL_USER;
-const MAIL_PASS = (process.env.MAIL_PASS || '').replace(/\s+/g, ''); // Google la muestra con espacios
-const REMITENTE = process.env.MAIL_FROM_NAME || 'BAPEG Industrial Perú';
+const MAIL_USER = (process.env.MAIL_USER || '').trim();
+const MAIL_PASS = (process.env.MAIL_PASS || '').replace(/\s+/g, '');
+const BREVO_API_KEY = (process.env.BREVO_API_KEY || '').trim();
+const REMITENTE = (process.env.MAIL_FROM_NAME || 'BAPEG Industrial Perú').trim();
 
-/* 1. Transporte (se crea una sola vez) */
+/* 1. Transporte SMTP (solo se usa si no hay BREVO_API_KEY) */
 let transporte = null;
 if (process.env.MAIL_TRANSPORT === 'prueba') {
-  transporte = nodemailer.createTransport({ jsonTransport: true }); // solo para pruebas, no envía
-} else if (MAIL_USER && MAIL_PASS) {
+  transporte = nodemailer.createTransport({ jsonTransport: true });
+} else if (!BREVO_API_KEY && MAIL_USER && MAIL_PASS) {
   transporte = nodemailer.createTransport({
     service: 'gmail',
     auth: { user: MAIL_USER, pass: MAIL_PASS }
   });
 }
 
-const correoActivo = () => Boolean(transporte);
+const correoActivo = () => Boolean(BREVO_API_KEY || transporte);
 
 async function verificarCorreo() {
+  if (BREVO_API_KEY) {
+    console.log(`Correo listo: las confirmaciones se envían vía API HTTP (remitente ${MAIL_USER})`);
+    return;
+  }
   if (!transporte) {
-    console.warn('Aviso: correo desactivado. Define MAIL_USER y MAIL_PASS en .env para enviar confirmaciones.');
+    console.warn('Aviso: correo desactivado. Define BREVO_API_KEY o MAIL_USER/MAIL_PASS.');
     return;
   }
   if (process.env.MAIL_TRANSPORT === 'prueba') return;
@@ -38,6 +37,43 @@ async function verificarCorreo() {
   } catch (error) {
     console.warn('Aviso: no se pudo conectar a Gmail. Revise MAIL_USER y MAIL_PASS →', error.message);
   }
+}
+
+/* Función interna unificada de envío */
+async function despacharCorreo({ to, subject, text, html }) {
+  if (BREVO_API_KEY) {
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': BREVO_API_KEY,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { name: REMITENTE, email: MAIL_USER },
+        replyTo: { email: MAIL_USER, name: REMITENTE },
+        to: [{ email: to }],
+        subject,
+        textContent: text,
+        htmlContent: html
+      })
+    });
+    if (!res.ok) {
+      const detalle = await res.text();
+      throw new Error(`Brevo API ${res.status}: ${detalle}`);
+    }
+    return true;
+  }
+
+  if (!transporte) return false;
+  return transporte.sendMail({
+    from: `"${REMITENTE}" <${MAIL_USER || 'pruebas@bapeg.local'}>`,
+    to,
+    replyTo: MAIL_USER,
+    subject,
+    text,
+    html
+  });
 }
 
 /* Escapa texto para insertarlo en el HTML del correo */
@@ -119,12 +155,10 @@ function textoPlano(r) {
 
 /* Envía la confirmación. Nunca lanza error: si falla, solo lo registra. */
 async function enviarConfirmacion(r) {
-  if (!transporte) return false;
+  if (!correoActivo()) return false;
   try {
-    const info = await transporte.sendMail({
-      from: `"${REMITENTE}" <${MAIL_USER || 'pruebas@bapeg.local'}>`,
+    const info = await despacharCorreo({
       to: r.correo,
-      replyTo: MAIL_USER,
       subject: `Requerimiento recibido ${r.codigo} – BAPEG Industrial`,
       text: textoPlano(r),
       html: plantilla(r)
@@ -195,7 +229,7 @@ function plantillaPedido(p, { titulo, mensaje, extra }) {
 
 /* Envía el correo del estado indicado. Nunca lanza error. */
 async function enviarCorreoPedido(pedido, estado, descripcion) {
-  if (!transporte || !ASUNTOS[estado]) return false;
+  if (!correoActivo() || !ASUNTOS[estado]) return false;
   let extra = '';
   if (estado === 'despachado' && pedido.numero_guia) {
     extra = `<p style="margin:0 0 18px;padding:12px 14px;background:#121212;border-left:3px solid #38BDF8;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#e8e4e0;">
@@ -206,10 +240,8 @@ async function enviarCorreoPedido(pedido, estado, descripcion) {
       Almacén BAPEG · Carabayllo, Lima<br>Lunes a viernes de 8:00 a 17:00 · Presenta tu DNI y el código del pedido.</p>`;
   }
   try {
-    await transporte.sendMail({
-      from: `"${REMITENTE}" <${MAIL_USER || 'pruebas@bapeg.local'}>`,
+    await despacharCorreo({
       to: pedido.correo,
-      replyTo: MAIL_USER,
       subject: `${ASUNTOS[estado]} · ${pedido.codigo}`,
       text: `Hola ${pedido.nombre}, ${descripcion}\nPedido ${pedido.codigo} · Total ${soles(pedido.total)}\nSeguimiento: ${SITIO}/seguimiento.html?codigo=${pedido.codigo}`,
       html: plantillaPedido(pedido, { titulo: ASUNTOS[estado], mensaje: descripcion, extra })

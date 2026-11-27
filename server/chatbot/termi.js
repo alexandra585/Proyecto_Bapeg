@@ -1,25 +1,26 @@
 /*
   termi.js – Conexión con Google Gemini para el asistente virtual "Termi".
-  - Lee las instrucciones del sistema desde instrucciones.txt.
-  - Usa la clave GEMINI_API_KEY y el modelo GEMINI_MODEL del archivo .env.
-  - responder(historial) recibe la conversación y devuelve la respuesta de Termi.
+- Lee las instrucciones del sistema desde instrucciones.txt.
+- Usa la clave GEMINI_API_KEY y el modelo GEMINI_MODEL del archivo .env.
+- responder(historial) recibe la conversación y devuelve la respuesta de Termi.
 */
 const fs = require('fs');
 const path = require('path');
 const { GoogleGenAI } = require('@google/genai');
 
-const INSTRUCCIONES = fs.readFileSync(path.join(__dirname, 'instrucciones.txt'), 'utf8');
-const MODELO = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+const INSTRUCCIONES = fs.readFileSync(path.join(__dirname, 'instrucciones.txt'), 'utf8').trim();
+const API_KEY = (process.env.GEMINI_API_KEY || '').trim();
+const MODELO = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
 
 // El cliente solo se crea si hay clave; sin clave el chatbot queda desactivado
-const ai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null;
+const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 function chatbotActivo() {
   return Boolean(ai);
 }
 
 /*
-  historial: [{ rol: 'usuario' | 'termi', texto: '...' }, ...]  (el último es la pregunta actual)
+  historial: [{ rol: 'usuario' | 'termi', texto: '...' }, ...] (el último es la pregunta actual)
   Gemini llama "user" al usuario y "model" al asistente.
 */
 async function responder(historial) {
@@ -32,9 +33,9 @@ async function responder(historial) {
     model: MODELO,
     contents,
     config: {
-      systemInstruction: INSTRUCCIONES,
-      maxOutputTokens: 600,   // respuestas cortas
-      temperature: 0.4        // más preciso y menos "creativo"
+      systemInstruction: INSTRUCCIONES || 'Eres Termi, el asistente virtual de BAPEG Industrial Perú.',
+      maxOutputTokens: 600,
+      temperature: 0.4
     }
   });
   return (respuesta.text || '').trim();
