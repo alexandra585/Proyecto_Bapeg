@@ -11,7 +11,7 @@ const MODELO = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
 
 const GROQ_KEY = (process.env.GROQ_API_KEY || '').trim();
 const GROQ_MODELO = (process.env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim();
-const TIMEOUT_MS = Number(process.env.CHAT_TIMEOUT_MS) || 15000;
+const TIMEOUT_MS = Number(process.env.CHAT_TIMEOUT_MS) || 10000;
 
 // Sin reintentos y con límite de tiempo: si Gemini no responde, no se queda colgado
 const ai = API_KEY
@@ -88,15 +88,16 @@ async function responder(historial) {
   const recientes = historial.slice(-6);
   while (recientes.length > 1 && recientes[0].rol !== 'usuario') recientes.shift();
 
-  if (ai) {
+  // Groq primero (responde en ~1 s); Gemini solo como respaldo
+  if (GROQ_KEY) {
     try {
-      return await conGemini(recientes);
+      return await conGroq(recientes);
     } catch (error) {
-      console.warn(`Aviso: Gemini (${MODELO}) falló →`, error.message);
-      if (!GROQ_KEY) throw error;
+      console.warn(`Aviso: Groq (${GROQ_MODELO}) falló →`, error.message);
+      if (!ai) throw error;
     }
   }
-  return await conGroq(recientes);
+  return await conGemini(recientes);
 }
 
 module.exports = { responder, chatbotActivo, MODELO };
