@@ -9,10 +9,17 @@ const INSTRUCCIONES = fs.readFileSync(path.join(__dirname, 'instrucciones.txt'),
 const API_KEY = (process.env.GEMINI_API_KEY || '').trim();
 const MODELO = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
 
-const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
+const GROQ_KEY = (process.env.GROQ_API_KEY || '').trim();
+const GROQ_MODELO = (process.env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim();
+const TIMEOUT_MS = Number(process.env.CHAT_TIMEOUT_MS) || 15000;
+
+// Sin reintentos y con límite de tiempo: si Gemini no responde, no se queda colgado
+const ai = API_KEY
+  ? new GoogleGenAI({ apiKey: API_KEY, httpOptions: { timeout: TIMEOUT_MS, retryOptions: { attempts: 1 } } })
+  : null;
 
 function chatbotActivo() {
-  return Boolean(ai);
+  return Boolean(ai || GROQ_KEY);
 }
 
 /* Atajos instantáneos (0 ms) para consultas frecuentes */
@@ -27,33 +34,69 @@ const ATAJOS = [
   }
 ];
 
-async function responder(historial) {
-  if (!ai) throw new Error('El chatbot no está configurado (falta GEMINI_API_KEY).');
+function sistema() {
+  return (INSTRUCCIONES || 'Eres Termi, asistente de BAPEG Industrial Perú.') +
+    '\nResponde siempre en máximo 2 o 3 oraciones directas y claras.';
+}
 
-  const ultimaPregunta = (historial[historial.length - 1]?.texto || '').trim();
-  const atajo = ATAJOS.find(a => a.patron.test(ultimaPregunta));
-  if (atajo) return atajo.respuesta;
-
-  // Enviar solo los últimos 6 mensajes para reducir latencia
-  const recientes = historial.slice(-6);
+async function conGemini(recientes) {
   const contents = recientes.map(m => ({
     role: m.rol === 'termi' ? 'model' : 'user',
     parts: [{ text: m.texto }]
   }));
-
   const respuesta = await ai.models.generateContent({
     model: MODELO,
     contents,
     config: {
-      systemInstruction: (INSTRUCCIONES || 'Eres Termi, asistente de BAPEG Industrial Perú.') +
-        '\nResponde siempre en máximo 2 o 3 oraciones directas y claras.',
+      systemInstruction: sistema(),
       maxOutputTokens: 220,
       temperature: 0.3,
       thinkingConfig: { thinkingBudget: 0 }
     }
   });
-
   return (respuesta.text || '').trim();
+}
+
+async function conGroq(recientes) {
+  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_KEY}` },
+    body: JSON.stringify({
+      model: GROQ_MODELO,
+      messages: [
+        { role: 'system', content: sistema() },
+        ...recientes.map(m => ({ role: m.rol === 'termi' ? 'assistant' : 'user', content: m.texto }))
+      ],
+      max_tokens: 220,
+      temperature: 0.3
+    }),
+    signal: AbortSignal.timeout(TIMEOUT_MS)
+  });
+  const datos = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(`Groq ${r.status}: ${datos.error?.message || r.statusText}`);
+  return (datos.choices?.[0]?.message?.content || '').trim();
+}
+
+async function responder(historial) {
+  if (!chatbotActivo()) throw new Error('El chatbot no está configurado (falta GEMINI_API_KEY o GROQ_API_KEY).');
+
+  const ultimaPregunta = (historial[historial.length - 1]?.texto || '').trim();
+  const atajo = ATAJOS.find(a => a.patron.test(ultimaPregunta));
+  if (atajo) return atajo.respuesta;
+
+  // Últimos 6 mensajes, pero siempre empezando por un mensaje del usuario
+  const recientes = historial.slice(-6);
+  while (recientes.length > 1 && recientes[0].rol !== 'usuario') recientes.shift();
+
+  if (ai) {
+    try {
+      return await conGemini(recientes);
+    } catch (error) {
+      console.warn(`Aviso: Gemini (${MODELO}) falló →`, error.message);
+      if (!GROQ_KEY) throw error;
+    }
+  }
+  return await conGroq(recientes);
 }
 
 module.exports = { responder, chatbotActivo, MODELO };
