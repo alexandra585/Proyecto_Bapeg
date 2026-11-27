@@ -50,7 +50,8 @@ router.post('/', limiteChat, async (req, res) => {
       ok: false,
       mensaje: cuota
         ? 'Termi recibió muchas consultas. Inténtalo en un minuto o escríbenos por WhatsApp.'
-        : 'Termi no pudo responder ahora. Inténtalo de nuevo o escríbenos por WhatsApp.'
+        : 'Termi no pudo responder ahora. Inténtalo de nuevo o escríbenos por WhatsApp.',
+      detalle: String(error.message || '').slice(0, 300)
     });
   }
 });

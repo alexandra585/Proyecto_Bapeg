@@ -10,7 +10,12 @@ const API_KEY = (process.env.GEMINI_API_KEY || '').trim();
 const MODELO = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
 
 const GROQ_KEY = (process.env.GROQ_API_KEY || '').trim();
-const GROQ_MODELO = (process.env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim();
+// Se prueban en orden; si uno no existe o no está permitido (404/403), se usa el siguiente
+const GROQ_MODELOS = [...new Set([
+  ...(process.env.GROQ_MODEL || '').split(','),
+  'llama-3.1-8b-instant', 'openai/gpt-oss-20b', 'openai/gpt-oss-120b', 'llama-3.3-70b-versatile'
+].map(m => m.trim()).filter(Boolean))];
+let groqModeloOk = null; // el primero que funcionó se recuerda
 const TIMEOUT_MS = Number(process.env.CHAT_TIMEOUT_MS) || 10000;
 
 // Sin reintentos y con límite de tiempo: si Gemini no responde, no se queda colgado
@@ -57,24 +62,48 @@ async function conGemini(recientes) {
   return (respuesta.text || '').trim();
 }
 
-async function conGroq(recientes) {
+async function llamarGroq(modelo, recientes) {
+  const razonador = modelo.startsWith('openai/gpt-oss');
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_KEY}` },
     body: JSON.stringify({
-      model: GROQ_MODELO,
+      model: modelo,
       messages: [
         { role: 'system', content: sistema() },
         ...recientes.map(m => ({ role: m.rol === 'termi' ? 'assistant' : 'user', content: m.texto }))
       ],
-      max_tokens: 220,
-      temperature: 0.3
+      max_tokens: razonador ? 700 : 220,
+      temperature: 0.3,
+      ...(razonador ? { reasoning_effort: 'low', include_reasoning: false } : {})
     }),
     signal: AbortSignal.timeout(TIMEOUT_MS)
   });
   const datos = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(`Groq ${r.status}: ${datos.error?.message || r.statusText}`);
+  if (!r.ok) {
+    const e = new Error(`Groq ${modelo} ${r.status}: ${datos.error?.message || r.statusText}`);
+    e.status = r.status;
+    throw e;
+  }
   return (datos.choices?.[0]?.message?.content || '').trim();
+}
+
+async function conGroq(recientes) {
+  const orden = groqModeloOk ? [groqModeloOk, ...GROQ_MODELOS.filter(m => m !== groqModeloOk)] : GROQ_MODELOS;
+  let ultimo;
+  for (const modelo of orden) {
+    try {
+      const texto = await llamarGroq(modelo, recientes);
+      groqModeloOk = modelo;
+      return texto;
+    } catch (error) {
+      ultimo = error;
+      if (![400, 403, 404].includes(error.status)) throw error; // otros errores: no seguir probando
+      console.warn('Aviso:', error.message);
+      if (groqModeloOk === modelo) groqModeloOk = null;
+    }
+  }
+  throw ultimo;
 }
 
 async function responder(historial) {
@@ -93,11 +122,14 @@ async function responder(historial) {
     try {
       return await conGroq(recientes);
     } catch (error) {
-      console.warn(`Aviso: Groq (${GROQ_MODELO}) falló →`, error.message);
+      console.warn('Aviso: Groq falló →', error.message);
       if (!ai) throw error;
+      try { return await conGemini(recientes); }
+      catch (e2) { throw new Error(`Groq: ${error.message} | Gemini: ${e2.message}`); }
     }
   }
-  return await conGemini(recientes);
+  try { return await conGemini(recientes); }
+  catch (e) { throw new Error(`${GROQ_KEY ? '' : '[sin GROQ_API_KEY] '}Gemini: ${e.message}`); }
 }
 
 module.exports = { responder, chatbotActivo, MODELO };
