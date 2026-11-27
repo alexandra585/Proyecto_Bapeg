@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Productos | Panel BAPEG</title>
+  <link rel="icon" href="../img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body data-pagina="productos">
+  <div class="app">
+    <!-- Menú lateral: es el mismo en Dashboard, Requerimientos y Pedidos -->
+    <aside class="menu-lateral" aria-label="Módulos del panel">
+      <a class="menu-lateral__marca" href="./">
+        <img src="../img/logo.svg" alt="">
+        <span>BAPEG <small>PANEL ADMINISTRATIVO</small></span>
+      </a>
+      <nav class="menu-lateral__nav">
+        <p class="menu-lateral__grupo">GENERAL</p>
+        <a href="./" data-modulo="dashboard"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Dashboard</a>
+        <p class="menu-lateral__grupo">OPERACIÓN</p>
+        <a href="requerimientos.html" data-modulo="requerimientos"><i class="fa-solid fa-clipboard-list"
+            aria-hidden="true"></i> Requerimientos <b class="menu-badge" id="menu-badge-requerimientos" hidden
+            title="Nuevos"></b></a>
+        <a href="pedidos.html" data-modulo="pedidos"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          Pedidos tienda <b class="menu-badge" id="menu-badge-pedidos" hidden title="Por atender"></b></a>
+        <a href="productos.html" data-modulo="productos"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
+          Productos <b class="menu-badge menu-badge--alerta" id="menu-badge-productos" hidden
+            title="Con stock bajo o agotados"></b></a>
+      </nav>
+      <div class="menu-lateral__pie">
+        <a href="../tienda.html" target="_blank" rel="noopener"><i class="fa-solid fa-store" aria-hidden="true"></i>
+          Ver tienda</a>
+        <a href="../index.html" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"
+            aria-hidden="true"></i> Ver sitio web</a>
+      </div>
+    </aside>
+
+    <div class="app__contenido">
+      <!-- Barra superior -->
+      <header class="barra">
+        <div class="contenedor barra__interior">
+          <p class="barra__fecha"><i class="fa-regular fa-calendar" aria-hidden="true"></i> <time id="fecha-panel"></time></p>
+          <div class="barra__acciones">
+            <span class="estado-conexion estado-conexion--cargando" id="estado-conexion" role="status"
+              aria-live="polite"><i class="estado-conexion__punto" aria-hidden="true"></i><span>Conectando</span></span>
+            <div class="barra__usuario">
+              <div class="barra__avatar" id="admin-iniciales" aria-hidden="true">A</div>
+              <span id="admin-nombre">Administrador</span>
+            </div>
+            <button class="btn btn--icono" id="btn-salir" type="button" title="Cerrar sesión"
+              aria-label="Cerrar sesión"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="panel">
+        <div class="contenedor">
+          <div class="panel__cabecera">
+            <div>
+              <p class="etiqueta">MÓDULO <span class="panel__separador">/</span> TIENDA</p>
+              <h1>Productos e inventario</h1>
+              <p>Catálogo de la tienda: precios, ofertas, fotos, categorías y stock con historial de movimientos.</p>
+            </div>
+            <div class="panel__acciones">
+              <button class="btn btn--borde" id="btn-categorias" type="button"><i class="fa-solid fa-tags" aria-hidden="true"></i> CATEGORÍAS</button>
+              <button class="btn btn--borde" id="btn-exportar" type="button"><i class="fa-solid fa-file-csv" aria-hidden="true"></i> EXPORTAR CSV</button>
+              <button class="btn btn--primario" id="btn-nuevo" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> NUEVO PRODUCTO</button>
+            </div>
+          </div>
+
+          <!-- Cifras del inventario (al hacer clic filtran) -->
+          <section class="inv-resumen" aria-label="Resumen del inventario">
+            <button class="inv-cifra" type="button" data-estado="activos">
+              <span class="inv-cifra__icono"><i class="fa-solid fa-box" aria-hidden="true"></i></span>
+              <span><b id="r-activos">0</b><small>Productos activos</small></span></button>
+            <div class="inv-cifra">
+              <span class="inv-cifra__icono inv-cifra__icono--azul"><i class="fa-solid fa-sack-dollar" aria-hidden="true"></i></span>
+              <span><b id="r-valor">S/ 0.00</b><small>Valor del inventario · <span id="r-unidades">0</span> und.</small></span></div>
+            <button class="inv-cifra" type="button" data-estado="bajo">
+              <span class="inv-cifra__icono inv-cifra__icono--amarillo"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>
+              <span><b id="r-bajos">0</b><small>Con stock bajo</small></span></button>
+            <button class="inv-cifra" type="button" data-estado="agotado">
+              <span class="inv-cifra__icono inv-cifra__icono--rojo"><i class="fa-solid fa-ban" aria-hidden="true"></i></span>
+              <span><b id="r-agotados">0</b><small>Agotados</small></span></button>
+            <button class="inv-cifra" type="button" data-estado="inactivos">
+              <span class="inv-cifra__icono inv-cifra__icono--gris"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i></span>
+              <span><b id="r-inactivos">0</b><small>Inactivos (ocultos)</small></span></button>
+          </section>
+
+          <form class="filtros filtros--productos" id="filtros" role="search">
+            <div class="campo buscador">
+              <label for="f-q">BUSCAR</label>
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <input class="input" id="f-q" name="q" type="search" placeholder="Nombre, SKU o tipo…">
+            </div>
+            <div class="campo">
+              <label for="f-categoria">CATEGORÍA</label>
+              <select class="select" id="f-categoria" name="categoria"><option value="">Todas</option></select>
+            </div>
+            <div class="campo">
+              <label for="f-estado">MOSTRAR</label>
+              <select class="select" id="f-estado" name="estado">
+                <option value="">Todos</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+                <option value="bajo">Stock bajo</option>
+                <option value="agotado">Agotados</option>
+                <option value="oferta">En oferta</option>
+                <option value="destacados">Destacados</option>
+              </select>
+            </div>
+            <button class="btn btn--borde" type="reset"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> LIMPIAR</button>
+          </form>
+
+          <div class="tabla-caja">
+            <table class="tabla tabla--productos">
+              <thead>
+                <tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Ventas 30 d</th>
+                  <th>Visible</th><th class="col-acciones">Acciones</th></tr>
+              </thead>
+              <tbody id="tabla-productos">
+                <tr><td colspan="7"><div class="vacio"><i class="fa-solid fa-spinner fa-spin"></i>Cargando…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="panel__actualizado panel__actualizado--pie" id="pie-productos"></p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Crear / editar producto -->
+  <dialog class="modal modal--producto" id="modal-producto" aria-labelledby="producto-titulo">
+    <form id="form-producto" novalidate>
+      <div class="modal__cabecera">
+        <div><p class="etiqueta" id="producto-etiqueta">NUEVO</p><h2 id="producto-titulo">Nuevo producto</h2></div>
+        <button class="btn btn--icono" type="button" data-cerrar aria-label="Cerrar"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal__cuerpo form-producto">
+        <div class="form-producto__foto">
+          <label class="foto-subida" for="p-imagen">
+            <img id="p-vista" alt="" hidden>
+            <span class="foto-subida__vacia" id="p-vista-vacia"><i class="fa-regular fa-image" aria-hidden="true"></i>
+              Subir foto<small>JPG, PNG o WebP · máx. 2 MB</small></span>
+          </label>
+          <input id="p-imagen" name="imagen" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <button class="btn btn--borde btn--chico" type="button" id="p-quitar-imagen" hidden>QUITAR FOTO</button>
+          <label class="interruptor"><input type="checkbox" name="activo" id="p-activo" checked><span></span> Visible en la tienda</label>
+          <label class="interruptor"><input type="checkbox" name="destacado" id="p-destacado"><span></span> Producto destacado</label>
+        </div>
+        <div class="form-producto__datos">
+          <div class="campo campo--doble"><label for="p-nombre">NOMBRE *</label><input class="input" id="p-nombre" name="nombre" maxlength="120" required></div>
+          <div class="campo"><label for="p-sku">SKU *</label><input class="input" id="p-sku" name="sku" maxlength="20" required placeholder="SEG-010"></div>
+          <div class="campo"><label for="p-categoria">CATEGORÍA *</label><select class="select" id="p-categoria" name="categoria" required></select></div>
+          <div class="campo campo--doble"><label for="p-tipo">TIPO / SUBCATEGORÍA</label><input class="input" id="p-tipo" name="tipo" maxlength="60" placeholder="Protección personal"></div>
+          <div class="campo campo--doble"><label for="p-detalle">DESCRIPCIÓN</label><textarea class="textarea" id="p-detalle" name="detalle" maxlength="500" rows="3" placeholder="Material, medidas, tallas, normas…"></textarea></div>
+          <div class="campo"><label for="p-precio">PRECIO (S/) *</label><input class="input" id="p-precio" name="precio" type="number" step="0.01" min="0.01" required></div>
+          <div class="campo"><label for="p-oferta">PRECIO DE OFERTA (S/)</label><input class="input" id="p-oferta" name="precio_oferta" type="number" step="0.01" min="0.01" placeholder="Vacío = sin oferta"></div>
+          <div class="campo" id="campo-stock"><label for="p-stock">STOCK INICIAL *</label><input class="input" id="p-stock" name="stock" type="number" step="1" min="0" value="0"></div>
+          <div class="campo"><label for="p-minimo">STOCK MÍNIMO (ALERTA)</label><input class="input" id="p-minimo" name="stock_minimo" type="number" step="1" min="0" value="5"></div>
+          <p class="form-producto__nota" id="p-nota-stock" hidden><i class="fa-solid fa-circle-info" aria-hidden="true"></i> El stock se modifica con el botón <strong>Movimiento de stock</strong> para que quede en el historial.</p>
+        </div>
+      </div>
+      <div class="modal__pie">
+        <button class="btn btn--peligro" type="button" id="p-eliminar" hidden><i class="fa-solid fa-trash" aria-hidden="true"></i> ELIMINAR</button>
+        <div>
+          <button class="btn btn--borde" type="button" data-cerrar>CANCELAR</button>
+          <button class="btn btn--primario" type="submit" id="p-guardar"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> GUARDAR</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Movimiento de stock + kardex -->
+  <dialog class="modal modal--stock" id="modal-stock" aria-labelledby="stock-titulo">
+    <div class="modal__cabecera">
+      <div><p class="etiqueta" id="stock-sku">SKU</p><h2 id="stock-titulo">Stock</h2></div>
+      <button class="btn btn--icono" type="button" data-cerrar aria-label="Cerrar"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal__cuerpo">
+      <div class="stock-actual" id="stock-actual"></div>
+      <form class="stock-form" id="form-stock" novalidate>
+        <div class="stock-tipos" role="radiogroup" aria-label="Tipo de movimiento">
+          <label><input type="radio" name="tipo" value="ingreso" checked><span><i class="fa-solid fa-arrow-down" aria-hidden="true"></i> Ingreso<small>Compra / reposición</small></span></label>
+          <label><input type="radio" name="tipo" value="salida"><span><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Salida<small>Merma, daño, uso interno</small></span></label>
+          <label><input type="radio" name="tipo" value="conteo"><span><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i> Conteo<small>Fijar stock real</small></span></label>
+        </div>
+        <div class="stock-form__campos">
+          <div class="campo"><label for="s-cantidad" id="s-cantidad-label">CANTIDAD QUE INGRESA</label><input class="input" id="s-cantidad" type="number" min="1" step="1" required></div>
+          <div class="campo"><label for="s-motivo">MOTIVO</label><input class="input" id="s-motivo" maxlength="200" placeholder="Ej. Factura F001-2345 de proveedor"></div>
+          <button class="btn btn--primario" type="submit" id="s-guardar">REGISTRAR</button>
+        </div>
+        <p class="stock-form__previa" id="s-previa"></p>
+      </form>
+      <h3 class="kardex__titulo">Historial de movimientos (kardex)</h3>
+      <div class="kardex"><table class="tabla tabla--compacta"><thead><tr><th>Fecha</th><th>Movimiento</th><th>Cant.</th><th>Stock</th><th>Detalle</th></tr></thead>
+        <tbody id="kardex"></tbody></table></div>
+    </div>
+  </dialog>
+
+  <!-- Categorías -->
+  <dialog class="modal modal--chico modal--categorias" id="modal-categorias" aria-labelledby="cat-titulo">
+    <div class="modal__cabecera">
+      <div><p class="etiqueta">TIENDA</p><h2 id="cat-titulo">Categorías</h2></div>
+      <button class="btn btn--icono" type="button" data-cerrar aria-label="Cerrar"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal__cuerpo">
+      <ul class="categorias-lista" id="lista-categorias"></ul>
+      <form class="categoria-nueva" id="form-categoria">
+        <select class="select" id="c-icono" aria-label="Ícono"></select>
+        <input class="input" id="c-nombre" maxlength="60" placeholder="Nueva categoría…" aria-label="Nombre de la nueva categoría">
+        <button class="btn btn--primario" type="submit"><i class="fa-solid fa-plus" aria-hidden="true"></i></button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Confirmación -->
+  <dialog class="modal modal--chico" id="modal-confirmar" aria-labelledby="confirmar-titulo">
+    <div class="modal__cabecera"><div><p class="etiqueta" style="color: var(--peligro);">CONFIRMAR</p><h2 id="confirmar-titulo">¿Eliminar producto?</h2></div></div>
+    <div class="modal__cuerpo"><p class="modal__texto" id="confirmar-texto"></p></div>
+    <div class="modal__pie"><div></div><div>
+      <button class="btn btn--borde" type="button" data-cerrar>CANCELAR</button>
+      <button class="btn btn--peligro-solido" type="button" id="confirmar-si"><i class="fa-solid fa-trash" aria-hidden="true"></i> CONFIRMAR</button>
+    </div></div>
+  </dialog>
+
+  <div class="avisos" id="avisos" aria-live="polite"></div>
+
+  <script src="admin.js"></script>
+  <script src="js/productos.js"></script>
+</body>
+
+</html>

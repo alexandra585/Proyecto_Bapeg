@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+    content="Equipos de protección personal, herramientas e indumentaria industrial. Compra en línea con pago seguro y envío a todo el Perú.">
+  <title>Tienda industrial | BAPEG Industrial</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tienda.css">
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+  <main class="tienda">
+    <!-- 1. Hero -->
+    <section class="tienda-hero">
+      <div class="contenedor tienda-hero__contenido">
+        <div class="tienda-hero__texto">
+          <p class="etiqueta">TIENDA INDUSTRIAL BAPEG</p>
+          <h1>Listos para trabajar.<br><span>Equipados para hacerlo bien.</span></h1>
+          <p>EPP, herramientas e indumentaria con stock en almacén. Compra en línea y recíbelo en tu planta u obra.</p>
+          <div class="tienda-hero__acciones">
+            <a class="btn btn--primario" href="#catalogo">VER CATÁLOGO <i class="fa-solid fa-arrow-down"
+                aria-hidden="true"></i></a>
+            <a class="btn btn--borde" href="seguimiento.html"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+              RASTREAR MI PEDIDO</a>
+          </div>
+        </div>
+      </div>
+      <div class="tienda-hero__linea" aria-hidden="true"></div>
+    </section>
+
+    <!-- 2. Beneficios -->
+    <section class="tienda-beneficios" aria-label="Beneficios de comprar en BAPEG">
+      <div class="contenedor tienda-beneficios__grid">
+        <div class="beneficio"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <div><strong>Pago seguro</strong><span>Tarjetas procesadas por Mercado Pago</span></div>
+        </div>
+        <div class="beneficio"><i class="fa-solid fa-truck" aria-hidden="true"></i>
+          <div><strong>Envío a todo el Perú</strong><span id="beneficio-envio">Gratis desde S/ 300</span></div>
+        </div>
+        <div class="beneficio"><i class="fa-solid fa-warehouse" aria-hidden="true"></i>
+          <div><strong>Recojo gratis</strong><span>En almacén Carabayllo, Lima</span></div>
+        </div>
+        <div class="beneficio"><i class="fa-solid fa-file-invoice" aria-hidden="true"></i>
+          <div><strong>Boleta o factura</strong><span>Comprobante electrónico</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Catálogo -->
+    <section class="tienda-catalogo seccion" id="catalogo">
+      <div class="contenedor">
+        <div class="tienda-catalogo__cabecera">
+          <div>
+            <p class="etiqueta">CATÁLOGO</p>
+            <h2>Encuentra tu equipo</h2>
+          </div>
+          <div class="tienda-herramientas">
+            <label class="tienda-busqueda" for="buscar-producto">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <span class="oculto-visual">Buscar producto</span>
+              <input id="buscar-producto" type="search" placeholder="Buscar casco, guantes, multímetro…"
+                autocomplete="off">
+            </label>
+            <label class="tienda-orden" for="ordenar">
+              <span class="oculto-visual">Ordenar</span>
+              <select id="ordenar">
+                <option value="relevancia">Destacados</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
+                <option value="nombre">Nombre A–Z</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <!-- Los botones de categoría los crea tienda.js según las categorías del panel -->
+        <div class="tienda-filtros" id="tienda-filtros" role="group" aria-label="Filtrar por categoría">
+          <button class="tienda-filtro activo" type="button" data-categoria="todos" aria-pressed="true">Todos
+            <span data-conteo="todos"></span></button>
+          <p class="tienda-resultados" id="tienda-resultados" aria-live="polite"></p>
+        </div>
+
+        <div class="tienda-grid" id="productos-grid" aria-busy="true">
+          <div class="tienda-cargando"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Cargando catálogo…
+          </div>
+        </div>
+        <div class="tienda-sin-resultados" id="sin-resultados" hidden>
+          <i class="fa-solid fa-magnifying-glass-minus" aria-hidden="true"></i>
+          <h3>No encontramos ese producto</h3>
+          <p>Prueba con otro nombre o cambia la categoría.</p>
+          <button class="btn btn--borde" id="limpiar-busqueda" type="button">VER TODOS LOS PRODUCTOS</button>
+        </div>
+
+        <aside class="tienda-ayuda">
+          <span class="tienda-ayuda__icono"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i></span>
+          <div><strong>¿Compras por volumen para tu cuadrilla?</strong>
+            <p>Para más de 50 unidades o productos a medida, te enviamos una cotización corporativa.</p>
+          </div>
+          <a class="btn btn--borde" href="contacto.html">COTIZAR AL POR MAYOR <i class="fa-solid fa-arrow-right"
+              aria-hidden="true"></i></a>
+        </aside>
+        <p class="tienda-nota"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Tienda de demostración del
+          proyecto: los pagos se procesan en el entorno de pruebas de Mercado Pago y no generan cobros reales.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 4. Botón flotante del carrito -->
+  <button id="abrir-carrito" class="carrito-flotante" type="button" aria-haspopup="dialog" aria-controls="carrito">
+    <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+    <span class="carrito-flotante__texto">Carrito</span>
+    <b id="carrito-cantidad">0</b>
+  </button>
+
+  <!-- 5. Carrito lateral -->
+  <dialog class="carrito" id="carrito" aria-labelledby="carrito-titulo">
+    <div class="carrito__cabecera">
+      <div>
+        <p class="etiqueta">TU PEDIDO</p>
+        <h2 id="carrito-titulo">Carrito</h2>
+      </div>
+      <button class="carrito__cerrar" id="carrito-cerrar" type="button" aria-label="Cerrar carrito">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="carrito__envio" id="carrito-barra-envio"></div>
+    <div class="carrito__items" id="carrito-items"></div>
+    <div class="carrito__pie">
+      <div class="carrito__fila"><span>Subtotal</span><strong id="carrito-subtotal">S/ 0.00</strong></div>
+      <p class="carrito__aviso">Precios con IGV. El envío se calcula en el siguiente paso.</p>
+      <a class="btn btn--primario carrito__pagar" id="carrito-pagar" href="checkout.html">IR A PAGAR <i
+          class="fa-solid fa-lock" aria-hidden="true"></i></a>
+      <button class="carrito__seguir" type="button" id="carrito-seguir">Seguir comprando</button>
+    </div>
+  </dialog>
+
+  <div class="tienda-aviso" id="tienda-aviso" role="status" aria-live="polite"></div>
+  <div id="footer-placeholder"></div>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/carrito.js"></script>
+  <script src="js/tienda.js"></script>
+</body>
+
+</html>

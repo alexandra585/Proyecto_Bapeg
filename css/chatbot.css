@@ -1,0 +1,61 @@
+/* chatbot.css – Widget del asistente virtual Termi (abajo a la izquierda) */
+.termi-boton {
+  position: fixed; left: 1.25rem; bottom: 1.25rem; z-index: 80;
+  display: flex; align-items: center; gap: .55rem;
+  padding: .75rem 1.05rem; border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--primario, #FF6B00); color: #141414;
+  font: 700 .8rem var(--f-label, monospace); letter-spacing: .04em;
+  box-shadow: 0 10px 28px rgba(0,0,0,.45); transition: transform .2s;
+}
+.termi-boton:hover { transform: translateY(-2px); }
+.termi-boton i { font-size: 1.05rem; }
+
+.termi-panel {
+  position: fixed; left: 1.25rem; bottom: 5rem; z-index: 81;
+  width: min(370px, calc(100vw - 2.5rem)); height: min(540px, calc(100vh - 7rem));
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--neutro, #1E1E1E); border: 1px solid var(--borde, #333);
+  border-top: 3px solid var(--primario, #FF6B00); border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.55); color: var(--texto, #e8e4e0);
+  font-family: var(--f-cuerpo, sans-serif);
+}
+.termi-panel[hidden] { display: none; }
+
+.termi-cabecera { display: flex; align-items: center; gap: .7rem; padding: .85rem 1rem; background: #181818; border-bottom: 1px solid var(--borde, #333); }
+.termi-avatar { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--primario, #FF6B00); color: #141414; font-size: 1.05rem; flex: 0 0 auto; }
+.termi-cabecera strong { display: block; font-family: var(--f-titulo, sans-serif); font-size: .98rem; }
+.termi-cabecera small { color: var(--texto-suave, #a9a29b); font-size: .72rem; }
+.termi-cabecera small::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: .35rem; border-radius: 50%; background: #4ade80; }
+.termi-cerrar { margin-left: auto; background: none; border: 0; color: var(--texto-suave, #a9a29b); font-size: 1.1rem; cursor: pointer; padding: .3rem; }
+.termi-cerrar:hover { color: var(--texto, #fff); }
+
+.termi-mensajes { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: .65rem; }
+.termi-msg { max-width: 85%; padding: .6rem .8rem; border-radius: 10px; font-size: .88rem; line-height: 1.5; overflow-wrap: anywhere; }
+.termi-msg--termi { align-self: flex-start; background: #262626; border-bottom-left-radius: 3px; }
+.termi-msg--usuario { align-self: flex-end; background: var(--primario, #FF6B00); color: #141414; border-bottom-right-radius: 3px; }
+.termi-msg--error { align-self: center; background: rgba(248,113,113,.12); color: #fca5a5; font-size: .8rem; }
+.termi-msg a { color: var(--secundario, #FFC000); }
+.termi-msg ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+
+.termi-escribiendo { display: inline-flex; gap: 4px; }
+.termi-escribiendo span { width: 7px; height: 7px; border-radius: 50%; background: var(--texto-suave, #a9a29b); animation: termi-punto 1s infinite ease-in-out; }
+.termi-escribiendo span:nth-child(2) { animation-delay: .15s; }
+.termi-escribiendo span:nth-child(3) { animation-delay: .3s; }
+@keyframes termi-punto { 0%, 80%, 100% { opacity: .3; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+
+.termi-sugerencias { display: flex; flex-wrap: wrap; gap: .4rem; padding: 0 1rem .6rem; }
+.termi-sugerencias button { padding: .35rem .65rem; border: 1px solid var(--borde, #333); border-radius: 999px; background: #181818; color: var(--texto, #e8e4e0); font-size: .75rem; cursor: pointer; }
+.termi-sugerencias button:hover { border-color: var(--primario, #FF6B00); color: var(--primario, #FF6B00); }
+
+.termi-form { display: flex; gap: .5rem; padding: .75rem; border-top: 1px solid var(--borde, #333); background: #181818; }
+.termi-form input { flex: 1; min-width: 0; padding: .6rem .75rem; border: 1px solid var(--borde, #333); border-radius: 8px; background: #101010; color: var(--texto, #e8e4e0); font: inherit; font-size: .88rem; }
+.termi-form input:focus { outline: 2px solid rgba(255,107,0,.35); border-color: var(--primario, #FF6B00); }
+.termi-form button { width: 42px; border: 0; border-radius: 8px; background: var(--primario, #FF6B00); color: #141414; cursor: pointer; }
+.termi-form button:disabled { opacity: .45; cursor: not-allowed; }
+.termi-aviso { margin: 0; padding: 0 1rem .6rem; background: #181818; color: var(--texto-suave, #a9a29b); font-size: .68rem; }
+
+@media (max-width: 600px) {
+  .termi-boton span { display: none; }
+  .termi-panel { left: .75rem; right: .75rem; width: auto; bottom: 4.6rem; }
+}
+@media (prefers-reduced-motion: reduce) { .termi-escribiendo span { animation: none; } }

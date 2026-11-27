@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Requerimientos | Panel BAPEG</title>
+  <link rel="icon" href="../img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body data-pagina="requerimientos">
+  <div class="app">
+    <!-- Menú lateral: es el mismo en Dashboard, Requerimientos y Pedidos -->
+    <aside class="menu-lateral" aria-label="Módulos del panel">
+      <a class="menu-lateral__marca" href="./">
+        <img src="../img/logo.svg" alt="">
+        <span>BAPEG <small>PANEL ADMINISTRATIVO</small></span>
+      </a>
+      <nav class="menu-lateral__nav">
+        <p class="menu-lateral__grupo">GENERAL</p>
+        <a href="./" data-modulo="dashboard"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Dashboard</a>
+        <p class="menu-lateral__grupo">OPERACIÓN</p>
+        <a href="requerimientos.html" data-modulo="requerimientos"><i class="fa-solid fa-clipboard-list"
+            aria-hidden="true"></i> Requerimientos <b class="menu-badge" id="menu-badge-requerimientos" hidden
+            title="Nuevos"></b></a>
+        <a href="pedidos.html" data-modulo="pedidos"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          Pedidos tienda <b class="menu-badge" id="menu-badge-pedidos" hidden title="Por atender"></b></a>
+        <a href="productos.html" data-modulo="productos"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
+          Productos <b class="menu-badge menu-badge--alerta" id="menu-badge-productos" hidden
+            title="Con stock bajo o agotados"></b></a>
+      </nav>
+      <div class="menu-lateral__pie">
+        <a href="../tienda.html" target="_blank" rel="noopener"><i class="fa-solid fa-store" aria-hidden="true"></i>
+          Ver tienda</a>
+        <a href="../index.html" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"
+            aria-hidden="true"></i> Ver sitio web</a>
+      </div>
+    </aside>
+
+    <div class="app__contenido">
+      <!-- Barra superior -->
+      <header class="barra">
+        <div class="contenedor barra__interior">
+          <p class="barra__fecha"><i class="fa-regular fa-calendar" aria-hidden="true"></i> <time id="fecha-panel"></time></p>
+          <div class="barra__acciones">
+            <span class="estado-conexion estado-conexion--cargando" id="estado-conexion" role="status"
+              aria-live="polite"><i class="estado-conexion__punto" aria-hidden="true"></i><span>Conectando</span></span>
+            <div class="barra__usuario">
+              <div class="barra__avatar" id="admin-iniciales" aria-hidden="true">A</div>
+              <span id="admin-nombre">Administrador</span>
+            </div>
+            <button class="btn btn--icono" id="btn-salir" type="button" title="Cerrar sesión"
+              aria-label="Cerrar sesión"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </header>
+
+    <main class="panel">
+      <div class="contenedor">
+        <!-- 2. Encabezado -->
+        <div class="panel__cabecera">
+          <div>
+            <p class="etiqueta">MÓDULO <span class="panel__separador">/</span> SERVICIOS INDUSTRIALES</p>
+            <h1>Requerimientos técnicos</h1>
+            <p>Solicitudes recibidas desde el formulario de contacto del sitio web.</p>
+          </div>
+          <div class="panel__acciones">
+            <span class="panel__actualizado"><i class="fa-regular fa-clock" aria-hidden="true"></i> Actualizado <time
+                id="ultima-actualizacion">—</time></span>
+            <button class="btn btn--primario" id="btn-exportar" type="button">
+              <i class="fa-solid fa-file-csv" aria-hidden="true"></i> EXPORTAR CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Estadísticas (al hacer clic filtran por estado) -->
+        <section class="stats" aria-label="Resumen por estado" aria-busy="true">
+          <button class="stat stat--total" type="button" data-estado="" aria-pressed="true">
+            <span class="stat__cabecera"><span class="stat__label">Total</span><i class="fa-solid fa-layer-group"
+                aria-hidden="true"></i></span><span class="stat__valor" id="st-total">0</span>
+          </button>
+          <button class="stat stat--nuevo" type="button" data-estado="nuevo" aria-pressed="false">
+            <span class="stat__cabecera"><span class="stat__label">Nuevos</span><i class="fa-solid fa-inbox"
+                aria-hidden="true"></i></span><span class="stat__valor" id="st-nuevo">0</span>
+          </button>
+          <button class="stat stat--en_revision" type="button" data-estado="en_revision" aria-pressed="false">
+            <span class="stat__cabecera"><span class="stat__label">En revisión</span><i class="fa-solid fa-clock"
+                aria-hidden="true"></i></span><span class="stat__valor" id="st-en_revision">0</span>
+          </button>
+          <button class="stat stat--cotizado" type="button" data-estado="cotizado" aria-pressed="false">
+            <span class="stat__cabecera"><span class="stat__label">Cotizados</span><i
+                class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i></span><span class="stat__valor"
+              id="st-cotizado">0</span>
+          </button>
+          <button class="stat stat--cerrado" type="button" data-estado="cerrado" aria-pressed="false">
+            <span class="stat__cabecera"><span class="stat__label">Cerrados</span><i class="fa-solid fa-circle-check"
+                aria-hidden="true"></i></span><span class="stat__valor" id="st-cerrado">0</span>
+          </button>
+          <div class="stat stat--semana">
+            <span class="stat__cabecera"><span class="stat__label">Últimos 7 días</span><i
+                class="fa-solid fa-calendar-week" aria-hidden="true"></i></span><span class="stat__valor"
+              id="st-semana">0</span>
+          </div>
+        </section>
+
+        <!-- 4. Filtros -->
+        <form class="filtros" id="filtros" role="search">
+          <div class="campo buscador">
+            <label for="f-q">BUSCAR</label>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input class="input" id="f-q" name="q" type="search" placeholder="Nombre, empresa, correo, RUC…">
+          </div>
+          <div class="campo">
+            <label for="f-estado">ESTADO</label>
+            <select class="select" id="f-estado" name="estado">
+              <option value="">Todos</option>
+              <option value="nuevo">Nuevo</option>
+              <option value="en_revision">En revisión</option>
+              <option value="cotizado">Cotizado</option>
+              <option value="cerrado">Cerrado</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="f-servicio">SERVICIO</label>
+            <select class="select" id="f-servicio" name="servicio">
+              <option value="">Todos</option>
+              <option>Montaje industrial</option>
+              <option>Suministro de materiales</option>
+              <option>Auditoría termográfica</option>
+              <option>Mantenimiento / SLA</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="f-desde">DESDE</label>
+            <input class="input" id="f-desde" name="desde" type="date">
+          </div>
+          <div class="campo">
+            <label for="f-hasta">HASTA</label>
+            <input class="input" id="f-hasta" name="hasta" type="date">
+          </div>
+          <button class="btn btn--borde" type="reset" title="Limpiar filtros">
+            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> LIMPIAR
+          </button>
+        </form>
+
+        <!-- 5. Tabla de requerimientos -->
+        <div class="tabla-caja">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Plazo</th>
+                <th>Estado</th>
+                <th><span class="oculto-visual">Adjunto</span><i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+                </th>
+                <th class="col-acciones">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-cuerpo">
+              <tr>
+                <td colspan="8">
+                  <div class="vacio"><i class="fa-solid fa-spinner fa-spin"></i>Cargando…</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 6. Paginación -->
+        <nav class="paginacion" aria-label="Paginación">
+          <span id="pag-info">—</span>
+          <div class="paginacion__botones">
+            <button class="btn btn--icono" id="pag-anterior" type="button" aria-label="Página anterior">
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <span class="paginacion__actual" id="pag-actual">1 / 1</span>
+            <button class="btn btn--icono" id="pag-siguiente" type="button" aria-label="Página siguiente">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </main>
+    </div>
+  </div>
+
+  <!-- 7. Modal: detalle del requerimiento -->
+  <dialog class="modal" id="modal-detalle" aria-labelledby="detalle-titulo">
+    <div class="modal__cabecera">
+      <div>
+        <p class="etiqueta" id="detalle-codigo">RFQ-0000</p>
+        <h2 id="detalle-titulo">Detalle</h2>
+      </div>
+      <button class="btn btn--icono" type="button" data-cerrar aria-label="Cerrar">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal__cuerpo" id="detalle-cuerpo"></div>
+    <div class="modal__pie">
+      <button class="btn btn--peligro" type="button" id="detalle-eliminar">
+        <i class="fa-solid fa-trash" aria-hidden="true"></i> ELIMINAR
+      </button>
+      <div>
+        <button class="btn btn--borde" type="button" data-cerrar>CANCELAR</button>
+        <button class="btn btn--primario" type="button" id="detalle-guardar">
+          <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> GUARDAR CAMBIOS
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 8. Modal: confirmar eliminación -->
+  <dialog class="modal modal--chico" id="modal-confirmar" aria-labelledby="confirmar-titulo">
+    <div class="modal__cabecera">
+      <div>
+        <p class="etiqueta" style="color: var(--peligro);">ACCIÓN IRREVERSIBLE</p>
+        <h2 id="confirmar-titulo">¿Eliminar requerimiento?</h2>
+      </div>
+    </div>
+    <div class="modal__cuerpo">
+      <p class="modal__texto" id="confirmar-texto">Se eliminará el registro y su archivo adjunto.</p>
+    </div>
+    <div class="modal__pie">
+      <div></div>
+      <div>
+        <button class="btn btn--borde" type="button" data-cerrar>CANCELAR</button>
+        <button class="btn btn--peligro-solido btn" type="button" id="confirmar-si">
+          <i class="fa-solid fa-trash" aria-hidden="true"></i> SÍ, ELIMINAR
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+
+  <div class="avisos" id="avisos" aria-live="polite"></div>
+
+  <script src="admin.js"></script>
+  <script src="js/requerimientos.js"></script>
+</body>
+
+</html>

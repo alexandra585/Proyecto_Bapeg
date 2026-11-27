@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dashboard | Panel BAPEG</title>
+  <link rel="icon" href="../img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body data-pagina="dashboard">
+  <div class="app">
+    <!-- Menú lateral: es el mismo en Dashboard, Requerimientos y Pedidos -->
+    <aside class="menu-lateral" aria-label="Módulos del panel">
+      <a class="menu-lateral__marca" href="./">
+        <img src="../img/logo.svg" alt="">
+        <span>BAPEG <small>PANEL ADMINISTRATIVO</small></span>
+      </a>
+      <nav class="menu-lateral__nav">
+        <p class="menu-lateral__grupo">GENERAL</p>
+        <a href="./" data-modulo="dashboard"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Dashboard</a>
+        <p class="menu-lateral__grupo">OPERACIÓN</p>
+        <a href="requerimientos.html" data-modulo="requerimientos"><i class="fa-solid fa-clipboard-list"
+            aria-hidden="true"></i> Requerimientos <b class="menu-badge" id="menu-badge-requerimientos" hidden
+            title="Nuevos"></b></a>
+        <a href="pedidos.html" data-modulo="pedidos"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          Pedidos tienda <b class="menu-badge" id="menu-badge-pedidos" hidden title="Por atender"></b></a>
+        <a href="productos.html" data-modulo="productos"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
+          Productos <b class="menu-badge menu-badge--alerta" id="menu-badge-productos" hidden
+            title="Con stock bajo o agotados"></b></a>
+      </nav>
+      <div class="menu-lateral__pie">
+        <a href="../tienda.html" target="_blank" rel="noopener"><i class="fa-solid fa-store" aria-hidden="true"></i>
+          Ver tienda</a>
+        <a href="../index.html" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"
+            aria-hidden="true"></i> Ver sitio web</a>
+      </div>
+    </aside>
+
+    <div class="app__contenido">
+      <!-- Barra superior -->
+      <header class="barra">
+        <div class="contenedor barra__interior">
+          <p class="barra__fecha"><i class="fa-regular fa-calendar" aria-hidden="true"></i> <time id="fecha-panel"></time></p>
+          <div class="barra__acciones">
+            <span class="estado-conexion estado-conexion--cargando" id="estado-conexion" role="status"
+              aria-live="polite"><i class="estado-conexion__punto" aria-hidden="true"></i><span>Conectando</span></span>
+            <div class="barra__usuario">
+              <div class="barra__avatar" id="admin-iniciales" aria-hidden="true">A</div>
+              <span id="admin-nombre">Administrador</span>
+            </div>
+            <button class="btn btn--icono" id="btn-salir" type="button" title="Cerrar sesión"
+              aria-label="Cerrar sesión"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="panel">
+        <div class="contenedor">
+          <div class="panel__cabecera">
+            <div>
+              <p class="etiqueta">CENTRO DE CONTROL</p>
+              <h1>Dashboard</h1>
+              <p>Indicadores de la tienda y de los requerimientos técnicos.</p>
+            </div>
+            <div class="periodo" role="group" aria-label="Periodo">
+              <button type="button" data-dias="7">7 días</button>
+              <button type="button" data-dias="30" class="activo" aria-pressed="true">30 días</button>
+              <button type="button" data-dias="90">90 días</button>
+            </div>
+          </div>
+
+          <!-- Cifras clave -->
+          <section class="kpis" aria-label="Indicadores clave" aria-busy="true">
+            <article class="kpi kpi--ventas">
+              <span class="kpi__icono"><i class="fa-solid fa-sack-dollar" aria-hidden="true"></i></span>
+              <p class="kpi__label">Ventas</p><p class="kpi__valor" id="k-ventas">—</p>
+              <p class="kpi__nota" id="k-variacion"></p>
+            </article>
+            <article class="kpi">
+              <span class="kpi__icono"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></span>
+              <p class="kpi__label">Pedidos pagados</p><p class="kpi__valor" id="k-pedidos">—</p>
+              <p class="kpi__nota" id="k-ticket"></p>
+            </article>
+            <article class="kpi">
+              <span class="kpi__icono kpi__icono--azul"><i class="fa-solid fa-credit-card" aria-hidden="true"></i></span>
+              <p class="kpi__label">Aprobación de pagos</p><p class="kpi__valor" id="k-aprobacion">—</p>
+              <p class="kpi__nota" id="k-intentos"></p>
+            </article>
+            <a class="kpi kpi--enlace" href="pedidos.html?estado=por_atender">
+              <span class="kpi__icono kpi__icono--amarillo"><i class="fa-solid fa-box-open" aria-hidden="true"></i></span>
+              <p class="kpi__label">Por despachar</p><p class="kpi__valor" id="k-atender">—</p>
+              <p class="kpi__nota">Pagados o en preparación <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></p>
+            </a>
+            <a class="kpi kpi--enlace" href="requerimientos.html">
+              <span class="kpi__icono kpi__icono--verde"><i class="fa-solid fa-clipboard-list" aria-hidden="true"></i></span>
+              <p class="kpi__label">Requerimientos</p><p class="kpi__valor" id="k-req">—</p>
+              <p class="kpi__nota" id="k-req-nuevos"></p>
+            </a>
+          </section>
+
+          <!-- Gráficos -->
+          <section class="graficos" aria-label="Gráficos">
+            <article class="grafico grafico--ancho">
+              <header class="grafico__cabecera"><div><p class="etiqueta">TIENDA</p><h2>Ventas por día</h2></div>
+                <p class="grafico__total" id="g-ventas-total"></p></header>
+              <div class="grafico__lienzo grafico__lienzo--alto"><canvas id="g-ventas" role="img" aria-label="Ventas diarias en soles"></canvas></div>
+            </article>
+            <article class="grafico">
+              <header class="grafico__cabecera"><div><p class="etiqueta">TIENDA</p><h2>Pedidos por estado</h2></div></header>
+              <div class="grafico__lienzo"><canvas id="g-estados" role="img" aria-label="Pedidos por estado"></canvas></div>
+            </article>
+            <article class="grafico">
+              <header class="grafico__cabecera"><div><p class="etiqueta">TIENDA</p><h2>Productos más vendidos</h2></div></header>
+              <div class="grafico__lienzo"><canvas id="g-top" role="img" aria-label="Productos más vendidos por unidades"></canvas></div>
+            </article>
+            <article class="grafico">
+              <header class="grafico__cabecera"><div><p class="etiqueta">TIENDA</p><h2>Ventas por categoría</h2></div></header>
+              <div class="grafico__lienzo"><canvas id="g-categorias" role="img" aria-label="Ventas por categoría"></canvas></div>
+            </article>
+            <article class="grafico">
+              <header class="grafico__cabecera"><div><p class="etiqueta">PAGOS</p><h2>Resultado de los pagos</h2></div></header>
+              <div class="grafico__lienzo"><canvas id="g-pagos" role="img" aria-label="Pagos aprobados, rechazados y pendientes"></canvas></div>
+            </article>
+            <article class="grafico">
+              <header class="grafico__cabecera"><div><p class="etiqueta">SERVICIOS</p><h2>Embudo de requerimientos</h2></div></header>
+              <div class="grafico__lienzo"><canvas id="g-req-estado" role="img" aria-label="Requerimientos por estado"></canvas></div>
+            </article>
+            <article class="grafico">
+              <header class="grafico__cabecera"><div><p class="etiqueta">SERVICIOS</p><h2>Servicios solicitados</h2></div></header>
+              <div class="grafico__lienzo"><canvas id="g-req-servicio" role="img" aria-label="Requerimientos por servicio"></canvas></div>
+            </article>
+          </section>
+          <p class="panel__actualizado panel__actualizado--pie"><i class="fa-regular fa-clock" aria-hidden="true"></i>
+            Actualizado <time id="ultima-actualizacion">—</time> · <span id="k-stock"></span></p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+
+  <div class="avisos" id="avisos" aria-live="polite"></div>
+
+  <script src="admin.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+
+</html>

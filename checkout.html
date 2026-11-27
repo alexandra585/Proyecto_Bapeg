@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Finalizar compra | BAPEG Industrial</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tienda.css">
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+  <main class="checkout seccion">
+    <div class="contenedor">
+      <!-- 1. Encabezado y pasos -->
+      <div class="checkout__cabecera">
+        <div>
+          <a class="checkout__volver" href="tienda.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Volver a la tienda</a>
+          <h1>Finalizar compra</h1>
+        </div>
+        <ol class="pasos" aria-label="Progreso de la compra">
+          <li class="pasos__item activo" data-paso="datos"><span>1</span> Datos y entrega</li>
+          <li class="pasos__item" data-paso="pago"><span>2</span> Pago</li>
+          <li class="pasos__item" data-paso="resultado"><span>3</span> Confirmación</li>
+        </ol>
+      </div>
+
+      <!-- Carrito vacío -->
+      <div class="checkout-vacio" id="checkout-vacio" hidden>
+        <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+        <h2>Tu carrito está vacío</h2>
+        <p>Agrega productos desde la tienda para continuar con la compra.</p>
+        <a class="btn btn--primario" href="tienda.html">IR A LA TIENDA</a>
+      </div>
+
+      <div class="checkout__grid" id="checkout-grid">
+        <div class="checkout__principal">
+          <!-- 2. Paso 1: datos y entrega -->
+          <form class="checkout-paso" id="paso-datos" novalidate>
+            <fieldset class="bloque">
+              <legend><span class="bloque__num">01</span> Datos de contacto</legend>
+              <div class="campos">
+                <div class="campo-t campo-t--completo">
+                  <label for="c-nombre">Nombres y apellidos *</label>
+                  <input id="c-nombre" name="nombre" autocomplete="name" required maxlength="120">
+                </div>
+                <div class="campo-t">
+                  <label for="c-correo">Correo electrónico *</label>
+                  <input id="c-correo" name="correo" type="email" autocomplete="email" required maxlength="150">
+                  <small>Aquí enviaremos la confirmación y el seguimiento.</small>
+                </div>
+                <div class="campo-t">
+                  <label for="c-telefono">Celular *</label>
+                  <input id="c-telefono" name="telefono" type="tel" autocomplete="tel" required maxlength="20"
+                    placeholder="987 654 321">
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="bloque">
+              <legend><span class="bloque__num">02</span> Comprobante</legend>
+              <div class="opciones-tarjeta opciones-tarjeta--dos" role="radiogroup" aria-label="Tipo de comprobante">
+                <label class="opcion"><input type="radio" name="comprobante" value="boleta" checked>
+                  <span><i class="fa-solid fa-receipt" aria-hidden="true"></i><strong>Boleta</strong><small>Con
+                      DNI</small></span></label>
+                <label class="opcion"><input type="radio" name="comprobante" value="factura">
+                  <span><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i><strong>Factura</strong><small>Con
+                      RUC</small></span></label>
+              </div>
+              <div class="campos">
+                <div class="campo-t">
+                  <label for="c-documento" id="c-documento-label">DNI *</label>
+                  <input id="c-documento" name="documento" inputmode="numeric" required maxlength="8">
+                </div>
+                <div class="campo-t" id="campo-razon" hidden>
+                  <label for="c-razon">Razón social *</label>
+                  <input id="c-razon" name="razon_social" maxlength="150" autocomplete="organization">
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="bloque">
+              <legend><span class="bloque__num">03</span> Entrega</legend>
+              <div class="opciones-tarjeta opciones-tarjeta--dos" role="radiogroup" aria-label="Tipo de entrega">
+                <label class="opcion"><input type="radio" name="entrega" value="envio" checked>
+                  <span><i class="fa-solid fa-truck-fast" aria-hidden="true"></i><strong>Envío a domicilio</strong><small
+                      id="texto-envio">Lima S/ 15 · Provincias S/ 25</small></span></label>
+                <label class="opcion"><input type="radio" name="entrega" value="recojo">
+                  <span><i class="fa-solid fa-warehouse" aria-hidden="true"></i><strong>Recojo en almacén</strong><small>Gratis ·
+                      Carabayllo, Lima</small></span></label>
+              </div>
+              <div class="campos" id="campos-envio">
+                <div class="campo-t">
+                  <label for="c-departamento">Departamento *</label>
+                  <select id="c-departamento" name="departamento" required>
+                    <option value="">Selecciona…</option>
+                  </select>
+                </div>
+                <div class="campo-t">
+                  <label for="c-distrito">Distrito / ciudad *</label>
+                  <input id="c-distrito" name="distrito" maxlength="80" autocomplete="address-level2" required>
+                </div>
+                <div class="campo-t campo-t--completo">
+                  <label for="c-direccion">Dirección *</label>
+                  <input id="c-direccion" name="direccion" maxlength="200" autocomplete="street-address"
+                    placeholder="Av. / Jr. / Calle, número, interior" required>
+                </div>
+                <div class="campo-t campo-t--completo">
+                  <label for="c-referencia">Referencia</label>
+                  <input id="c-referencia" name="referencia" maxlength="200" placeholder="Opcional: frente a…, portón azul">
+                </div>
+              </div>
+              <div class="recojo-info" id="info-recojo" hidden>
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <div><strong>Almacén BAPEG · Carabayllo, Lima</strong>
+                  <span>Lunes a viernes de 8:00 a 17:00. Te avisaremos por correo cuando tu pedido esté listo (24–48 h
+                    hábiles).</span>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="checkout__accion">
+              <p class="checkout__estado" id="estado-datos" role="alert"></p>
+              <button class="btn btn--primario btn--grande" type="submit" id="btn-continuar">CONTINUAR AL PAGO <i
+                  class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+          </form>
+
+          <!-- 3. Paso 2: pago -->
+          <section class="checkout-paso" id="paso-pago" hidden aria-labelledby="titulo-pago">
+            <div class="bloque">
+              <div class="pago__cabecera">
+                <div>
+                  <p class="etiqueta" id="pago-codigo">PEDIDO</p>
+                  <h2 id="titulo-pago">Pago con tarjeta</h2>
+                </div>
+                <div class="pago__total"><span>Total a pagar</span><strong id="pago-total">S/ 0.00</strong></div>
+              </div>
+
+              <div class="pago__aviso" id="pago-rechazo" hidden role="alert"></div>
+
+              <!-- Mercado Pago (Card Payment Brick) -->
+              <div id="pago-mp" hidden>
+                <div id="brick-tarjeta" class="pago__brick"></div>
+                <p class="pago__cargando" id="brick-cargando"><i class="fa-solid fa-spinner fa-spin"
+                    aria-hidden="true"></i> Cargando formulario seguro de Mercado Pago…</p>
+                <details class="tarjetas-prueba">
+                  <summary><i class="fa-solid fa-flask" aria-hidden="true"></i> Tarjetas de prueba (entorno sandbox)
+                  </summary>
+                  <table>
+                    <thead>
+                      <tr><th>Tarjeta</th><th>Número</th><th>CVV</th><th>Vence</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Visa</td><td>4009 1753 3280 6176</td><td>123</td><td>11/30</td></tr>
+                      <tr><td>Mastercard</td><td>5031 7557 3453 0604</td><td>123</td><td>11/30</td></tr>
+                      <tr><td>American Express</td><td>3711 803032 57522</td><td>1234</td><td>11/30</td></tr>
+                    </tbody>
+                  </table>
+                  <p>El <strong>nombre del titular</strong> define el resultado: <code>APRO</code> aprobado ·
+                    <code>FUND</code> fondos insuficientes · <code>SECU</code> CVV inválido · <code>OTHE</code> rechazo
+                    general · <code>CONT</code> pendiente. Documento: DNI <code>12345678</code> (o tipo «Otro» con
+                    <code>123456789</code>). Correo: cualquiera válido.</p>
+                </details>
+              </div>
+
+              <!-- Modo demostración (sin credenciales) -->
+              <div class="pago-demo" id="pago-demo" hidden>
+                <div class="pago-demo__tarjeta" aria-hidden="true">
+                  <span class="pago-demo__chip"></span>
+                  <span class="pago-demo__numero">4009 •••• •••• 6176</span>
+                  <span class="pago-demo__pie"><span>TITULAR DE PRUEBA</span><span>11/30</span></span>
+                </div>
+                <div>
+                  <p class="pago-demo__titulo"><i class="fa-solid fa-flask" aria-hidden="true"></i> Modo demostración
+                  </p>
+                  <p>El servidor no tiene credenciales de Mercado Pago (<code>MP_PUBLIC_KEY</code> y
+                    <code>MP_ACCESS_TOKEN</code> en <code>.env</code>). Elige el resultado del pago para probar el
+                    flujo completo.</p>
+                  <div class="pago-demo__botones">
+                    <button class="btn btn--primario" type="button" data-simular="aprobado"><i
+                        class="fa-solid fa-circle-check" aria-hidden="true"></i> SIMULAR PAGO APROBADO</button>
+                    <button class="btn btn--borde" type="button" data-simular="rechazado"><i
+                        class="fa-solid fa-circle-xmark" aria-hidden="true"></i> SIMULAR RECHAZO</button>
+                  </div>
+                </div>
+              </div>
+
+              <p class="pago__seguro"><i class="fa-solid fa-lock" aria-hidden="true"></i> Los datos de la tarjeta los
+                procesa Mercado Pago. BAPEG no recibe ni guarda el número de tu tarjeta.</p>
+            </div>
+            <button class="checkout__editar" type="button" id="btn-editar"><i class="fa-solid fa-pen"
+                aria-hidden="true"></i> Modificar datos de entrega</button>
+          </section>
+
+          <!-- 4. Paso 3: resultado -->
+          <section class="checkout-paso" id="paso-resultado" hidden aria-live="polite"></section>
+        </div>
+
+        <!-- 5. Resumen -->
+        <aside class="resumen" aria-labelledby="resumen-titulo">
+          <div class="resumen__cabecera">
+            <h2 id="resumen-titulo">Resumen</h2>
+            <a href="tienda.html#carrito" id="resumen-editar">Editar carrito</a>
+          </div>
+          <div class="resumen__items" id="resumen-items"></div>
+          <dl class="resumen__totales">
+            <div><dt>Subtotal</dt><dd id="resumen-subtotal">S/ 0.00</dd></div>
+            <div><dt>Envío</dt><dd id="resumen-envio">—</dd></div>
+            <div class="resumen__total"><dt>Total</dt><dd id="resumen-total">S/ 0.00</dd></div>
+          </dl>
+          <p class="resumen__nota"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Compra protegida ·
+            Precios con IGV</p>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <div id="footer-placeholder"></div>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/carrito.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+
+</html>

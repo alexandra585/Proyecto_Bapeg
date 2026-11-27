@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Pedidos | Panel BAPEG</title>
+  <link rel="icon" href="../img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body data-pagina="pedidos">
+  <div class="app">
+    <!-- Menú lateral: es el mismo en Dashboard, Requerimientos y Pedidos -->
+    <aside class="menu-lateral" aria-label="Módulos del panel">
+      <a class="menu-lateral__marca" href="./">
+        <img src="../img/logo.svg" alt="">
+        <span>BAPEG <small>PANEL ADMINISTRATIVO</small></span>
+      </a>
+      <nav class="menu-lateral__nav">
+        <p class="menu-lateral__grupo">GENERAL</p>
+        <a href="./" data-modulo="dashboard"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Dashboard</a>
+        <p class="menu-lateral__grupo">OPERACIÓN</p>
+        <a href="requerimientos.html" data-modulo="requerimientos"><i class="fa-solid fa-clipboard-list"
+            aria-hidden="true"></i> Requerimientos <b class="menu-badge" id="menu-badge-requerimientos" hidden
+            title="Nuevos"></b></a>
+        <a href="pedidos.html" data-modulo="pedidos"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          Pedidos tienda <b class="menu-badge" id="menu-badge-pedidos" hidden title="Por atender"></b></a>
+        <a href="productos.html" data-modulo="productos"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
+          Productos <b class="menu-badge menu-badge--alerta" id="menu-badge-productos" hidden
+            title="Con stock bajo o agotados"></b></a>
+      </nav>
+      <div class="menu-lateral__pie">
+        <a href="../tienda.html" target="_blank" rel="noopener"><i class="fa-solid fa-store" aria-hidden="true"></i>
+          Ver tienda</a>
+        <a href="../index.html" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"
+            aria-hidden="true"></i> Ver sitio web</a>
+      </div>
+    </aside>
+
+    <div class="app__contenido">
+      <!-- Barra superior -->
+      <header class="barra">
+        <div class="contenedor barra__interior">
+          <p class="barra__fecha"><i class="fa-regular fa-calendar" aria-hidden="true"></i> <time id="fecha-panel"></time></p>
+          <div class="barra__acciones">
+            <span class="estado-conexion estado-conexion--cargando" id="estado-conexion" role="status"
+              aria-live="polite"><i class="estado-conexion__punto" aria-hidden="true"></i><span>Conectando</span></span>
+            <div class="barra__usuario">
+              <div class="barra__avatar" id="admin-iniciales" aria-hidden="true">A</div>
+              <span id="admin-nombre">Administrador</span>
+            </div>
+            <button class="btn btn--icono" id="btn-salir" type="button" title="Cerrar sesión"
+              aria-label="Cerrar sesión"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="panel">
+        <div class="contenedor">
+          <div class="panel__cabecera">
+            <div>
+              <p class="etiqueta">MÓDULO <span class="panel__separador">/</span> TIENDA</p>
+              <h1>Pedidos de la tienda</h1>
+              <p>Gestiona el despacho: confirma la preparación, registra el courier y la guía, y marca la entrega.</p>
+            </div>
+            <div class="panel__acciones">
+              <button class="btn btn--borde" id="btn-recargar" type="button"><i class="fa-solid fa-rotate" aria-hidden="true"></i> ACTUALIZAR</button>
+              <button class="btn btn--primario" id="btn-exportar" type="button"><i class="fa-solid fa-file-csv" aria-hidden="true"></i> EXPORTAR CSV</button>
+            </div>
+          </div>
+
+          <!-- Bandejas de trabajo -->
+          <div class="bandejas" role="tablist" aria-label="Bandejas de pedidos">
+            <button class="bandeja activo" type="button" role="tab" aria-selected="true" data-estado="">
+              <span>Todos</span><b id="b-total">0</b></button>
+            <button class="bandeja bandeja--atender" type="button" role="tab" aria-selected="false" data-estado="por_atender">
+              <span>Por atender</span><b id="b-atender">0</b></button>
+            <button class="bandeja" type="button" role="tab" aria-selected="false" data-estado="en_camino">
+              <span>En camino / por recoger</span><b id="b-camino">0</b></button>
+            <button class="bandeja" type="button" role="tab" aria-selected="false" data-estado="entregado">
+              <span>Entregados</span><b id="b-entregados">0</b></button>
+            <button class="bandeja" type="button" role="tab" aria-selected="false" data-estado="pendiente_pago">
+              <span>Sin pago</span><b id="b-sinpago">0</b></button>
+            <button class="bandeja" type="button" role="tab" aria-selected="false" data-estado="cancelado">
+              <span>Cancelados</span><b id="b-cancelados">0</b></button>
+          </div>
+
+          <form class="filtros filtros--pedidos" id="filtros" role="search">
+            <div class="campo buscador">
+              <label for="f-q">BUSCAR</label>
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <input class="input" id="f-q" name="q" type="search" placeholder="Código, cliente, correo, DNI/RUC, guía…">
+            </div>
+            <div class="campo">
+              <label for="f-entrega">ENTREGA</label>
+              <select class="select" id="f-entrega" name="entrega">
+                <option value="">Todas</option>
+                <option value="envio">Envío a domicilio</option>
+                <option value="recojo">Recojo en almacén</option>
+              </select>
+            </div>
+            <div class="campo"><label for="f-desde">DESDE</label><input class="input" id="f-desde" name="desde" type="date"></div>
+            <div class="campo"><label for="f-hasta">HASTA</label><input class="input" id="f-hasta" name="hasta" type="date"></div>
+            <input type="hidden" name="estado" id="f-estado">
+            <button class="btn btn--borde" type="reset"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> LIMPIAR</button>
+          </form>
+
+          <div class="tabla-caja">
+            <table class="tabla">
+              <thead>
+                <tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th>Entrega</th><th>Total</th><th>Estado</th>
+                  <th class="col-acciones">Acción</th></tr>
+              </thead>
+              <tbody id="tabla-pedidos">
+                <tr><td colspan="7"><div class="vacio"><i class="fa-solid fa-spinner fa-spin"></i>Cargando…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <nav class="paginacion" aria-label="Paginación">
+            <span id="pag-info">—</span>
+            <div class="paginacion__botones">
+              <button class="btn btn--icono" id="pag-anterior" type="button" aria-label="Página anterior"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+              <span class="paginacion__actual" id="pag-actual">1 / 1</span>
+              <button class="btn btn--icono" id="pag-siguiente" type="button" aria-label="Página siguiente"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+            </div>
+          </nav>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Detalle y gestión del pedido -->
+  <dialog class="modal modal--pedido" id="modal-pedido" aria-labelledby="pedido-titulo">
+    <div class="modal__cabecera">
+      <div>
+        <p class="etiqueta" id="pedido-codigo">BP-000000</p>
+        <h2 id="pedido-titulo">Pedido</h2>
+      </div>
+      <button class="btn btn--icono" type="button" data-cerrar aria-label="Cerrar"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal__cuerpo" id="pedido-cuerpo"></div>
+  </dialog>
+
+  <div class="avisos" id="avisos" aria-live="polite"></div>
+
+  <script src="admin.js"></script>
+  <script src="js/pedidos.js"></script>
+</body>
+
+</html>

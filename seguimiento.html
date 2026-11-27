@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Consulta el estado de tu pedido de la tienda BAPEG Industrial.">
+  <title>Rastrear pedido | BAPEG Industrial</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tienda.css">
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+  <main class="seguimiento">
+    <section class="seguimiento__hero">
+      <div class="contenedor">
+        <p class="etiqueta">TIENDA BAPEG · POSTVENTA</p>
+        <h1>Rastrea tu pedido</h1>
+        <p>Ingresa el código que recibiste por correo (por ejemplo <strong>BP-000012</strong>) y el correo con el que
+          compraste.</p>
+        <form class="rastreo" id="form-rastreo">
+          <label class="rastreo__campo"><span>Código de pedido</span>
+            <input id="r-codigo" name="codigo" required placeholder="BP-000000" autocomplete="off" maxlength="20"></label>
+          <label class="rastreo__campo"><span>Correo de compra</span>
+            <input id="r-correo" name="correo" type="email" required placeholder="tu@correo.com" autocomplete="email"
+              maxlength="150"></label>
+          <button class="btn btn--primario" type="submit"><i class="fa-solid fa-magnifying-glass"
+              aria-hidden="true"></i> CONSULTAR</button>
+        </form>
+        <p class="rastreo__estado" id="rastreo-estado" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="seccion seguimiento__resultado" id="resultado" hidden aria-live="polite">
+      <div class="contenedor">
+        <div class="pedido-estado" id="pedido-estado"></div>
+        <div class="seguimiento__grid">
+          <div class="bloque">
+            <h2 class="bloque__titulo">Historial del pedido</h2>
+            <ol class="historial" id="historial"></ol>
+          </div>
+          <aside class="bloque">
+            <h2 class="bloque__titulo">Detalle</h2>
+            <div id="detalle-pedido"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="footer-placeholder"></div>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/carrito.js"></script>
+  <script src="js/seguimiento.js"></script>
+</body>
+
+</html>
